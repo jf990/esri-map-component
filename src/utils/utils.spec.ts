@@ -1,21 +1,48 @@
-import { format } from './utils';
+import { parseLevelOfDetail } from './utils';
 
-describe('format', () => {
-  it('returns empty string for no names defined', () => {
-    expect(format(undefined, undefined, undefined)).toEqual('');
+describe('parseLevelOfDetail', () => {
+  it('returns object for no valid input', () => {
+    expect(parseLevelOfDetail(undefined)).toEqual({
+      longitude: 0,
+      latitude: 0,
+      levelOfDetail: 1,
+      scale: 0
+    });
   });
 
-  it('formats just first names', () => {
-    expect(format('Joseph', undefined, undefined)).toEqual('Joseph');
+  it('returns object for invalid input', () => {
+    expect(parseLevelOfDetail('0')).toEqual({
+      longitude: 0,
+      latitude: 0,
+      levelOfDetail: 1,
+      scale: 0
+    });
   });
 
-  it('formats first and last names', () => {
-    expect(format('Joseph', undefined, 'Publique')).toEqual('Joseph Publique');
+  it('returns object for invalid input', () => {
+    expect(parseLevelOfDetail('0,0,0')).toEqual({
+      longitude: 0,
+      latitude: 0,
+      levelOfDetail: 1,
+      scale: 0
+    });
   });
 
-  it('formats first, middle and last names', () => {
-    expect(format('Joseph', 'Quincy', 'Publique')).toEqual(
-      'Joseph Quincy Publique'
-    );
+  it('returns object for valid input filling in missing defaults', () => {
+    expect(parseLevelOfDetail('45.23234')).toEqual({
+      longitude: 45.23234,
+      latitude: 0,
+      levelOfDetail: 1,
+      scale: 0
+    });
+  });
+
+  it('returns object for valid input filling in missing defaults', () => {
+    expect(parseLevelOfDetail('45.23234,17.9084545,22')).toEqual({
+      longitude: 45.23234,
+      latitude: 17.9084545,
+      levelOfDetail: 22,
+      scale: 0
+    });
   });
 });

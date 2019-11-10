@@ -1,5 +1,5 @@
 import { Component, Prop, h } from '@stencil/core';
-import { format } from '../../utils/utils';
+import {parseLevelOfDetail, viewpointProps} from '../../utils/utils';
 
 @Component({
   tag: 'esri-map-view',
@@ -27,13 +27,53 @@ export class EsriMapView {
   @Prop() viewpoint: string;
 
   /**
+   * Viewpoint longitude coordinate expected to be a number valid for the spatial reference
+   * of the map WGS84.
+   */
+  @Prop() longitude: Number;
+
+  /**
+   * Viewpoint latitude coordinate expected to be a number valid for the spatial reference
+   * of the map WGS84.
+   */
+  @Prop() latitude: Number;
+
+  /**
+   * Viewpoint level of detail integer between 0 and 24.
+   */
+  @Prop() levelOfDetail: Number;
+
+  /**
    * This is a debug formatter to help see what properties and state are set.
    */
-  private debugString(): string {
-    return format(this.basemap, this.webmap, this.viewpoint);
+  private debugString(message): string {
+    return message;
+  }
+
+  /**
+   * Verify and validate any attributes set on the component to make sure
+   * we are in a valid starting state we can render.
+   */
+  private verifyProps(): boolean {
+    let isValid:boolean = false;
+    if (!this.basemap && !this.webmap) {
+      this.basemap = "osm";
+    }
+    if (!this.viewpoint) {
+      this.viewpoint = "0,0,1";
+    }
+    const parsedViewpoint:viewpointProps = parseLevelOfDetail(this.viewpoint);
+    this.longitude = parsedViewpoint.longitude;
+    this.latitude = parsedViewpoint.latitude;
+    this.levelOfDetail = parsedViewpoint.levelOfDetail;
+    return isValid;
+  }
+
+  connectedCallback() {
+    this.verifyProps();
   }
 
   render() {
-    return <div>This is a MapView with {this.debugString()}</div>;
+    return <div>Esri MapView: <span class="error-message">{this.debugString(this.basemap + " " + this.webmap + " X:" + this.longitude + ", Y:" + this.latitude + ", LOD:" + this.levelOfDetail)}</span></div>;
   }
 }

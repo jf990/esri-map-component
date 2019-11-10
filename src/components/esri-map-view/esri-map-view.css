@@ -9,3 +9,7 @@
   font-family: "Avenir Next","Helvetica Neue","Helvetica","Arial",sans-serif;
   font-size: 18pt;
 }
+
+.error-message {
+  color: #ee7171
+}

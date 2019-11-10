@@ -16,6 +16,18 @@ export namespace Components {
     */
     'basemap': string;
     /**
+    * Viewpoint latitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    */
+    'latitude': Number;
+    /**
+    * Viewpoint level of detail integer between 0 and 24.
+    */
+    'levelOfDetail': Number;
+    /**
+    * Viewpoint longitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    */
+    'longitude': Number;
+    /**
     * Indicate an initial viewpoint to focus the map. This is a string or 3 numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD).
     */
     'viewpoint': string;
@@ -45,6 +57,18 @@ declare namespace LocalJSX {
     * Indicate a basemap id to use for the map. This property will be overridden by `webmap` if that property is provided. If neither `webmap` nor `basemap` are set, then a default basemap is assigned.
     */
     'basemap'?: string;
+    /**
+    * Viewpoint latitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    */
+    'latitude'?: Number;
+    /**
+    * Viewpoint level of detail integer between 0 and 24.
+    */
+    'levelOfDetail'?: Number;
+    /**
+    * Viewpoint longitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    */
+    'longitude'?: Number;
     /**
     * Indicate an initial viewpoint to focus the map. This is a string or 3 numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD).
     */
