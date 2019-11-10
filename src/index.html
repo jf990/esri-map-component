@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Esri Map View</title>
+
+  <script type="module" src="/build/esri-map-view.esm.js"></script>
+  <script nomodule src="/build/esri-map-view.js"></script>
+  <style>
+    body {
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <esri-map-view basemap="streets-vector" viewpoint="34.0922,17.1234,9"></esri-map-view>
+</body>
+</html>
