@@ -16,19 +16,21 @@ export namespace Components {
     */
     'basemap': string;
     /**
-    * Viewpoint latitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service.
     */
-    'latitude': Number;
+    'layers': Array<string>;
+    'popupinfo': string;
+    'popuptitle': string;
     /**
-    * Viewpoint level of detail integer between 0 and 24.
+    * Include a search widget by indicating where on the map view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is an invalid value then a search widget will not show.
     */
-    'levelOfDetail': Number;
+    'search': string;
     /**
-    * Viewpoint longitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    * Indicate a symbol to use to mark the location of the initial viewpoint.
     */
-    'longitude': Number;
+    'symbol': string;
     /**
-    * Indicate an initial viewpoint to focus the map. This is a string or 3 numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD).
+    * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9"
     */
     'viewpoint': string;
     /**
@@ -58,19 +60,21 @@ declare namespace LocalJSX {
     */
     'basemap'?: string;
     /**
-    * Viewpoint latitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service.
     */
-    'latitude'?: Number;
+    'layers'?: Array<string>;
+    'popupinfo'?: string;
+    'popuptitle'?: string;
     /**
-    * Viewpoint level of detail integer between 0 and 24.
+    * Include a search widget by indicating where on the map view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is an invalid value then a search widget will not show.
     */
-    'levelOfDetail'?: Number;
+    'search'?: string;
     /**
-    * Viewpoint longitude coordinate expected to be a number valid for the spatial reference of the map WGS84.
+    * Indicate a symbol to use to mark the location of the initial viewpoint.
     */
-    'longitude'?: Number;
+    'symbol'?: string;
     /**
-    * Indicate an initial viewpoint to focus the map. This is a string or 3 numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD).
+    * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9"
     */
     'viewpoint'?: string;
     /**

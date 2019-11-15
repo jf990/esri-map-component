@@ -1,15 +1,7 @@
-:host {
-  display: block;
+.esri-map-view
+{
+  height: 100%;
+  width: 100%;
   padding: 0;
   margin: 0;
-  width: 100%;
-  height: 100%;
-  background: #222222;
-  color: #cccccc;
-  font-family: "Avenir Next","Helvetica Neue","Helvetica","Arial",sans-serif;
-  font-size: 18pt;
-}
-
-.error-message {
-  color: #ee7171
 }
