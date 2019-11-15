@@ -7,6 +7,7 @@ import {
   parseViewpoint,
   viewpointProps,
   isValidItemID,
+  isValidURL,
   isValidSearchPosition
 } from "../../utils/utils";
 
@@ -30,7 +31,7 @@ export class EsriMapView {
 
   /**
    * Indicate a basemap id to use for the map. This property will be overridden by
-   * `webmap` if that property is provided. If neither `webmap` nor `basemap` are set, then
+   * `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then
    * a default basemap is assigned.
    */
   @Prop() basemap: string = "osm";
@@ -43,29 +44,41 @@ export class EsriMapView {
 
   /**
    * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers
-   * expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9"
+   * expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9".
+   * You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as
+   * the web map's initial viewpoint would be used.
    */
   @Prop() viewpoint: string = "";
 
   /**
    * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL
-   * to the feature service, or the item ID of the feature service.
+   * to the feature service, or the item ID of the feature service. Multiple layers can be separated
+   * with a comma.
    */
-  @Prop() layers: Array<string> = [];
+  @Prop() layers: string = "";
 
   /**
    * Include a search widget by indicating where on the map view it should appear. The valid values for this
-   * attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is an invalid
-   * value then a search widget will not show.
+   * attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing
+   * or an invalid value then a search widget will not show.
    */
   @Prop() search: string = "";
 
   /**
-   * Indicate a symbol to use to mark the location of the initial viewpoint.
+   * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL
+   * to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to
+   * use a green map pin as the symbol.
    */
   @Prop() symbol: string = "";
 
+  /**
+   * If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.
+   */
   @Prop() popuptitle: string = "";
+
+  /**
+   * If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.
+   */
   @Prop() popupinfo: string = "";
 
   /**
@@ -114,7 +127,7 @@ export class EsriMapView {
    * Given the attributes set on the element, creates either a standard basemap, a custom vector basemap,
    * or a web map.
    */
-  createEsriMap() {
+  private createEsriMap() {
     return new Promise((mapCreated, mapFailed) => {
       if (isValidItemID(this.webmap)) {
         // If webmap provided, assume a valid item ID and try to create a WebMap from it.
@@ -198,7 +211,7 @@ export class EsriMapView {
   /**
    * Creates the mapview used in the component. Assumes the map was created before getting here.
    */
-  createEsriMapView() {
+  private createEsriMapView() {
     return loadModules(["esri/views/MapView"], this.esriMapOptions).then(
       ([EsriMapView]: [__esri.MapViewConstructor]) => {
         const mapDiv = this.hostElement.querySelector("div");
@@ -217,11 +230,55 @@ export class EsriMapView {
             map: this.esriMap || this.esriWebMap
           });
         }
-        if (this.esriMapView && isValidSearchPosition(this.search)) {
-          this.createSearchWidget(this.search);
+        if (this.esriMapView) {
+          if (this.layers) {
+            this.addLayers(this.layers);
+          }
+          if (isValidSearchPosition(this.search)) {
+            this.createSearchWidget(this.search);
+          }
         }
       }
     );
+  }
+
+  /**
+   * Add layers to the map. Each layer can be specified by its item ID or its service URL.
+   * @param layers {string} A list of 1 or more layers where multiple layers are separated with commas.
+   */
+  private addLayers(layers: string) {
+    const layersList = layers.split(",");
+
+    // Review the proposed layer list and remove anything that doesn't look like a layer specification.
+    for (let i = layersList.length; i >= 0; i --) {
+      const layerId:string = layersList[i];
+      if (!isValidItemID(layerId) && !isValidURL(layerId)) {
+        layersList.splice(i, 1);
+      }
+    }
+    // Only proceed with layer construction if we have layers we think we can load.
+    if (layersList.length > 0) {
+      loadModules(["esri/layers/FeatureLayer", "esri/layers/Layer", "esri/portal/PortalItem"], this.esriMapOptions).then(
+        ([FeatureLayer, Layer, PortalItem]: [__esri.FeatureLayerConstructor, __esri.LayerConstructor, __esri.PortalItemConstructor]) => {
+          layersList.forEach((layerId:string) => {
+            if (isValidItemID(layerId)) {
+              const portalItem = new PortalItem({
+                id: layerId
+              });
+              Layer.fromPortalItem({portalItem: portalItem}).then(itemLayer => {
+                this.esriMap.add(itemLayer);
+              });
+            } else if (isValidURL(layerId)) {
+              const featureLayer = new FeatureLayer({
+                url: layerId
+              });
+              if (featureLayer) {
+                this.esriMap.add(featureLayer);
+              }
+            }
+          });
+      });
+    }
   }
 
   /**
@@ -229,7 +286,7 @@ export class EsriMapView {
    * @param position {string} The UI position where to place the search widget in the view.
    * @returns {Promise} A Promise is returned to load the Search Widget module.
    */
-  createSearchWidget(position: string) {
+  private createSearchWidget(position: string) {
     return loadModules(["esri/widgets/Search"], this.esriMapOptions).then(
       ([SearchWidget]: [__esri.widgetsSearchConstructor]) => {
         const searchWidget = new SearchWidget({
@@ -244,7 +301,11 @@ export class EsriMapView {
     );
   }
 
-  showSymbol(symbol: string) {
+  /**
+   * Show a symbol on the map at the initial viewpoint location.
+   * @param symbol {string} Either an asset id of a local symbol asset or a fully qualified URL to a PNG to use as the symbol.
+   */
+  private showSymbol(symbol: string) {
     let symbolURL;
     let xoffset;
     let yoffset;

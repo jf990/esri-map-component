@@ -1,4 +1,4 @@
-import { parseViewpoint, isValidItemID, isValidSearchPosition } from './utils';
+import { parseViewpoint, isValidItemID, isValidURL, isValidSearchPosition } from './utils';
 
 describe('parseViewpoint', () => {
   it('returns object for no valid input', () => {
@@ -76,6 +76,26 @@ describe("Check item ID", () => {
     expect(isValidItemID("3fc2fa407ab40fadd12fe38d5801f")).toBeFalsy();
     expect(isValidItemID("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")).toBeFalsy();
     expect(isValidItemID("                                ")).toBeFalsy();
+  });
+});
+
+describe("Check URL", () => {
+  it('returns true for valid URL', () => {
+    expect(isValidURL("http://service.arcgis.com/test")).toBeTruthy();
+    expect(isValidURL("https://s.a.com")).toBeTruthy();
+    expect(isValidURL("https://services8.arcgis.com/LLNIdHmmdjO2qQ5q/arcgis/rest/services/berlin_cycle_routes/FeatureServer")).toBeTruthy();
+  });
+
+  it('returns false for invalid input', () => {
+    expect(isValidURL(undefined)).toBeFalsy();
+    expect(isValidURL(null)).toBeFalsy();
+    expect(isValidURL("")).toBeFalsy();
+    expect(isValidURL("0")).toBeFalsy();
+    expect(isValidURL(" ")).toBeFalsy();
+    expect(isValidURL(",;,")).toBeFalsy();
+    expect(isValidURL("service.arcgis.com")).toBeFalsy();
+    expect(isValidURL("111113fc2fa4040f9add12fe38d5801f5")).toBeFalsy();
+    expect(isValidURL("ftp://arcgis/rest/services")).toBeFalsy();
   });
 });
 

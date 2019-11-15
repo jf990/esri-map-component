@@ -45,6 +45,15 @@ export function isValidItemID(itemID: string): boolean {
 }
 
 /**
+ * Helper function to test a string to see if it is a valid URL.
+ * @param itemID {string} A proposed URL.
+ * @returns {boolean} `true` if the input appears to be a valid URL, otherwise `false`.
+ */
+export function isValidURL(url: string): boolean {
+  return /^http(s)?:\/\//.test(url);
+}
+
+/**
  * Verify a proposed search widget position is an expected value.
  * @param position {string} A search position specification.
  * @returns {boolean} `true` when OK, `false` when bad.
