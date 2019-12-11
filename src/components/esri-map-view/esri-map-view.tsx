@@ -6,6 +6,8 @@ import { loadCss, loadModules } from "esri-loader";
 import {
   parseViewpoint,
   viewpointProps,
+  parseOffset,
+  offsetProps,
   isValidItemID,
   isValidURL,
   isValidSearchPosition
@@ -67,9 +69,17 @@ export class EsriMapView {
   /**
    * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL
    * to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to
-   * use a green map pin as the symbol.
+   * use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker
+   * and the color value. Use a 6-digit HTML color value or the standard HTML color name.
    */
   @Prop() symbol: string = "";
+
+  /**
+   * Some symbols will require an x/y offset so that the registration point of the
+   * symbol is exactly on the map point. Here you can specify an x,y offset to adjust
+   * the symbol. Use a comma separated coordinate pair.
+   */
+  @Prop() symboloffset: string = "";
 
   /**
    * If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.
@@ -91,8 +101,8 @@ export class EsriMapView {
   latitude: number = 0;
   levelOfDetail: number = 2;
   parsedViewpoint: boolean = false;
-// custom basemap 881452f5f54547b1880ded765ddf4c1e
-// webmap 96a43d02861547e3ad4e4b91df867660
+  parsedOffset: offsetProps;
+
   constructor() {
     this.verifyProps();
     loadCss(`${this.esriMapOptions.url}/esri/css/main.css`);
@@ -117,7 +127,11 @@ export class EsriMapView {
     this.createEsriMapView()
     .then(() => {
       if (this.symbol) {
-        this.showSymbol(this.symbol);
+        if (this.symbol.indexOf("pin:") === 0) {
+          this.showPin(this.symbol.substr(4));
+        } else {
+          this.showSymbol(this.symbol);
+        }
       }
     })
   }
@@ -314,10 +328,10 @@ export class EsriMapView {
       xoffset = "0";
       yoffset = "0";
     } else {
-      // if URL, load image?
-      symbolURL = this.asset_path + "green-pin.png";
-      xoffset = "0";
-      yoffset = "0";
+      // if URL, validate URL? load image?
+      symbolURL = symbol;
+      xoffset = this.parsedOffset.x.toString();
+      yoffset = this.parsedOffset.y.toString();
     }
     return loadModules([
       "esri/symbols/PictureMarkerSymbol",
@@ -341,6 +355,56 @@ export class EsriMapView {
           url: symbolURL,
           width: "64px",
           height: "64px",
+          xoffset: xoffset,
+          yoffset: yoffset
+        });
+        const symbolGraphic = new Graphic({
+          geometry: point,
+          symbol: pointSymbol,
+          popupTemplate: {
+            title: this.popuptitle,
+            content: this.popupinfo
+          }
+        });
+        this.esriMapView.graphics.add(symbolGraphic);
+      }
+    );
+  }
+
+  /**
+   * Show a pin on the map at the initial viewpoint location.
+   * @param pinColor {string} The color value of the pin symbol.
+   */
+  private showPin(pinColor: string) {
+    return loadModules([
+      "esri/symbols/TextSymbol",
+      "esri/Graphic",
+      "esri/geometry/Point"
+    ], this.esriMapOptions).then(
+      ([
+        TextSymbol,
+        Graphic,
+        Point
+      ]: [
+        __esri.TextSymbolConstructor,
+        __esri.GraphicConstructor,
+        __esri.PointConstructor
+      ]) => {
+        let xoffset = this.parsedOffset.x;
+        let yoffset = this.parsedOffset.y;
+        const point = new Point({
+          longitude: this.longitude,
+          latitude: this.latitude
+        });
+        const pointSymbol = new TextSymbol({
+          color: pinColor,
+          haloColor: "black",
+          haloSize: "1px",
+          text: "\ue61d", // esri-icon-map-pin
+          font: {
+            size: 30,
+            family: "CalciteWebCoreIcons"
+          },
           xoffset: xoffset,
           yoffset: yoffset
         });
@@ -388,6 +452,7 @@ export class EsriMapView {
       this.levelOfDetail = parsedViewpoint.levelOfDetail;
       this.parsedViewpoint = true;
     }
+    this.parsedOffset = parseOffset(this.symboloffset);
     if (this.search && !isValidSearchPosition(this.search)) {
       // if given a search widget and it's not a valid UI position then ignore it.
       this.search = null;

@@ -32,9 +32,13 @@ export namespace Components {
     */
     'search': string;
     /**
-    * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol.
+    * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.
     */
     'symbol': string;
+    /**
+    * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.
+    */
+    'symboloffset': string;
     /**
     * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint would be used.
     */
@@ -43,6 +47,9 @@ export namespace Components {
     * Indicate a web map id to use for the map. If neither `webmap` nor `basemap` are set, then a default basemap is assigned.
     */
     'webmap': string;
+  }
+  interface EsriSceneView {
+    'name': string;
   }
 }
 
@@ -54,8 +61,15 @@ declare global {
     prototype: HTMLEsriMapViewElement;
     new (): HTMLEsriMapViewElement;
   };
+
+  interface HTMLEsriSceneViewElement extends Components.EsriSceneView, HTMLStencilElement {}
+  var HTMLEsriSceneViewElement: {
+    prototype: HTMLEsriSceneViewElement;
+    new (): HTMLEsriSceneViewElement;
+  };
   interface HTMLElementTagNameMap {
     'esri-map-view': HTMLEsriMapViewElement;
+    'esri-scene-view': HTMLEsriSceneViewElement;
   }
 }
 
@@ -82,9 +96,13 @@ declare namespace LocalJSX {
     */
     'search'?: string;
     /**
-    * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol.
+    * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.
     */
     'symbol'?: string;
+    /**
+    * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.
+    */
+    'symboloffset'?: string;
     /**
     * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint would be used.
     */
@@ -94,9 +112,13 @@ declare namespace LocalJSX {
     */
     'webmap'?: string;
   }
+  interface EsriSceneView {
+    'name'?: string;
+  }
 
   interface IntrinsicElements {
     'esri-map-view': EsriMapView;
+    'esri-scene-view': EsriSceneView;
   }
 }
 
@@ -107,6 +129,7 @@ declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
       'esri-map-view': LocalJSX.EsriMapView & JSXBase.HTMLAttributes<HTMLEsriMapViewElement>;
+      'esri-scene-view': LocalJSX.EsriSceneView & JSXBase.HTMLAttributes<HTMLEsriSceneViewElement>;
     }
   }
 }

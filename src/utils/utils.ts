@@ -35,6 +35,22 @@ export function parseViewpoint(viewpoint: string): viewpointProps {
   });
 }
 
+export interface offsetProps {
+  x: number,
+  y: number
+};
+
+export function parseOffset(offset: string): offsetProps {
+  if (offset === undefined || offset === null) {
+    offset = "0,0";
+  }
+  let values:Array<any> = offset.split(",");
+  return ({
+    x: parseFloat(values[0]) || 0,
+    y: parseFloat(values[1]) || 0
+  });
+}
+
 /**
  * Helper function to test a string to see if it is a valid ArcGIS Online item ID.
  * @param itemID {string} A proposed ArcGIS Online item ID.

@@ -14,19 +14,33 @@
       padding: 0;
       margin: 0;
     }
+
+    .half-width {
+      width: 50%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
 
-  <esri-map-view
-    basemap="osm"
-    viewpoint="13.3761697,52.5166449,15"
-    layers="d3e5c29f5e404aa4b2de29a9f0e37996"
-    search="top-right"
-    symbol="green-pin"
-    popuptitle="Brandenburg Gate"
-    popupinfo="This is a historic place you should visit">
-  </esri-map-view>
+  <div class="half-width">
+    <esri-map-view
+      basemap="osm"
+      viewpoint="13.3761697,52.5166449,15"
+      layers="d3e5c29f5e404aa4b2de29a9f0e37996"
+      search="top-right"
+      symbol="pin:red"
+      symboloffset="24,12"
+      popuptitle="Brandenburg Gate"
+      popupinfo="This is a historic place you should visit">
+    </esri-map-view>
+  </div>
+  <div class="half-width">
+    <esri-scene-view name="dodo">
+    </esri-scene-view>
+  </div>
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-import { parseViewpoint, isValidItemID, isValidURL, isValidSearchPosition } from './utils';
+import { parseViewpoint, parseOffset, isValidItemID, isValidURL, isValidSearchPosition } from './utils';
 
 describe('parseViewpoint', () => {
   it('returns object for no valid input', () => {
@@ -52,6 +52,29 @@ describe('parseViewpoint', () => {
       latitude: 40.872496,
       levelOfDetail: 9,
       scale: 0
+    });
+  });
+});
+
+describe('parseOffset', () => {
+  it('returns offset for no valid input', () => {
+    expect(parseOffset(undefined)).toEqual({
+      x: 0,
+      y: 0
+    });
+  });
+
+  it('returns offset for valid input', () => {
+    expect(parseOffset("1,1")).toEqual({
+      x: 1,
+      y: 1
+    });
+  });
+
+  it('returns offset for valid input', () => {
+    expect(parseOffset("-12.3,-3.2")).toEqual({
+      x: -12.3,
+      y: -3.2
     });
   });
 });
