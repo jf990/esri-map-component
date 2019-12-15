@@ -1,6 +1,6 @@
 {
   "name": "esri-map-view",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Display an Esri map view as a web component.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -16,6 +16,7 @@
   ],
   "scripts": {
     "build": "stencil build --docs",
+    "publish": "npm publish --access public",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
