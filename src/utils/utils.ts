@@ -4,10 +4,14 @@
  */
 
 /**
- * Parse a viewpoint string into its constituent parts: longitude, latitude, and level of detail. This helper makes sure all the parts
- * are valid values and assigned defaults when things are missing.
- * @param viewpoint {string} Expect 3 comma separated number indicating longitude, latitude, and level of detail, e.g. "-118.4324,34.1234,9".
- * @returns {Object} An object made up of {longitude, latitude, levelOfDetail, scale}
+ * Parse a viewpoint string into its constituent parts: longitude, latitude, and
+ * level of detail. This helper makes sure all the parts are valid values and
+ * assigned defaults when things are missing.
+ *
+ * @param viewpoint {string} Expect 3 comma separated number indicating
+ *   longitude, latitude, and level of detail, e.g. "-118.4324,34.1234,9".
+ * @returns {viewpointProps} An object made up of {longitude, latitude,
+ *   levelOfDetail, scale}
  */
 
 export interface viewpointProps {
@@ -35,7 +39,17 @@ export function parseViewpoint(viewpoint: string): viewpointProps {
   });
 }
 
-export interface offsetProps {
+/**
+ * Parse an offset string into its constituent parts: x, y. This helper
+ * makes sure all the parts are valid values and assigned defaults when
+ * things are missing.
+ *
+ * @param offset {string} Expect 2 comma separated numbers indicating x and y
+ *   values for a geographic offset, denominated in points. e.g. "-2,3".
+ * @returns {offsetProps} An object made up of {x, y}
+ */
+
+ export interface offsetProps {
   x: number,
   y: number
 };
@@ -48,6 +62,48 @@ export function parseOffset(offset: string): offsetProps {
   return ({
     x: parseFloat(values[0]) || 0,
     y: parseFloat(values[1]) || 0
+  });
+}
+
+/**
+ * Parse a camera position string into its constituent parts: x, y, z, heading,
+ * and tilt. This helper makes sure all the parts are valid values and
+ * assigned defaults when things are missing.
+ *
+ * @param cameraPosition {string} Expect 5 comma separated numbers indicating
+ *   x, y, z, heading, and tilt, e.g. "-118.4324,34.1234,9,93.5,86.9".
+ * @returns {cameraProps} An object made up of {x, y, z, heading, tilt}
+ */
+
+export interface cameraProps {
+  x: number,
+  y: number,
+  z: number,
+  heading: number,
+  tilt: number
+};
+
+export function parseCameraPosition(cameraPosition: string): cameraProps {
+  const defaultZ:number = 50000;
+  const defaultHeading:number = 90;
+  const defaultTilt:number = 0;
+
+  if (cameraPosition === undefined || cameraPosition === null) {
+    cameraPosition = `0,0,${defaultZ},${defaultHeading},${defaultTilt}`;
+  }
+  let values:Array<any> = cameraPosition.split(",");
+  if (values.length < 5) {
+    const defaultFill = [0,0,defaultZ,defaultHeading,defaultTilt];
+    for (let i = values.length; i < 5; i ++) {
+      values[i] = defaultFill[i];
+    }
+  }
+  return ({
+    x: parseFloat(values[0]) || 0,
+    y: parseFloat(values[1]) || 0,
+    z: parseFloat(values[2]) || defaultZ,
+    heading: parseFloat(values[3]) || defaultHeading,
+    tilt: parseFloat(values[4]) || defaultTilt,
   });
 }
 

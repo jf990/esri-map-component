@@ -1,11 +1,13 @@
 /**
- * <esri-map-view> a custom web component for rendering a 2D map on a web page.
+ * <esri-scene-view> a custom web component for rendering a 3D map on a web page.
  */
 import { Component, h, Prop, Element, getAssetPath } from "@stencil/core";
 import { loadCss, loadModules } from "esri-loader";
 import {
   parseViewpoint,
   viewpointProps,
+  parseCameraPosition,
+  cameraProps,
   parseOffset,
   offsetProps,
   isValidItemID,
@@ -14,11 +16,11 @@ import {
 } from "../../utils/utils";
 
 @Component({
-  tag: "esri-map-view",
-  styleUrl: "esri-map-view.css",
+  tag: 'esri-scene-view',
+  styleUrl: "esri-scene-view.css",
   assetsDirs: ['assets']
 })
-export class EsriMapView {
+export class EsriSceneView {
   @Element() hostElement: HTMLElement;
 
   private javascript_api_version: string = "4.13";
@@ -33,24 +35,33 @@ export class EsriMapView {
 
   /**
    * Indicate a basemap id to use for the map. This property will be overridden by
-   * `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then
+   * `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then
    * a default basemap is assigned.
    */
   @Prop() basemap: string = "osm";
 
   /**
-   * Indicate a web map id to use for the map. If neither `webmap` nor `basemap`
+   * Indicate a web scene id to use for the map. If neither `webscene` nor `basemap`
    * are set, then a default basemap is assigned.
    */
-  @Prop() webmap: string = "";
+  @Prop() webscene: string = "";
 
   /**
    * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers
    * expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9".
-   * You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as
-   * the web map's initial viewpoint is used.
+   * You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as
+   * the web scene's initial viewpoint is used. However, this setting will override the web scenes
+   * initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes,
+   * the level of detail is translated into a 3D camera position height of Z-axis position.
    */
   @Prop() viewpoint: string = "";
+
+  /**
+   * Indicate the camera position for the initial scene viewpoint. This is a string of five comma
+   * separated numbers as follows: x,y,z,heading,tilt. If you set this it will override `viewpoint`
+   * settings.
+   */
+  @Prop() cameraPosition: string = "";
 
   /**
    * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL
@@ -95,36 +106,35 @@ export class EsriMapView {
    * Properties to hold the map, mapview, and initial viewpoint
    */
   esriMap: __esri.Map;
-  esriWebMap: __esri.WebMap;
-  esriMapView: __esri.MapView;
+  esriWebScene: __esri.WebScene;
+  esriSceneView: __esri.SceneView;
   longitude: number = 0;
   latitude: number = 0;
   levelOfDetail: number = 2;
   parsedViewpoint: boolean = false;
   parsedOffset: offsetProps;
+  cameraSettings: cameraProps = null;
+
+  @Prop() name: string = "Esri";
 
   constructor() {
     this.verifyProps();
-    loadCss(`${this.esriMapOptions.url}/esri/css/main.css`);
-    this.createEsriMap()
+    loadCss(`${this.esriMapOptions.url}/esri/themes/light/main.css`);
+    this.createEsriScene()
     .then(() => {
-      console.log("Map should be showing");
+      console.log("Map scene should be showing");
     })
     .catch((mapLoadingException) => {
       console.log(`Map loading failed ${mapLoadingException.toString()}`);
     })
   }
 
-  componentDidUpdate() {
-    // console.log("component update");
-  }
-
   /**
-   * The component is loaded and has rendered. Attach the MapView to the HTML element.
+   * The component is loaded and has rendered. Attach the sceneview to the HTML element.
    * Only called once per component life cycle.
    */
   componentDidLoad() {
-    this.createEsriMapView()
+    this.createEsriSceneView()
     .then(() => {
       if (this.symbol) {
         if (this.symbol.indexOf("pin:") === 0) {
@@ -136,25 +146,26 @@ export class EsriMapView {
     })
   }
 
+
   /**
    * Create a map object. Review the element attributes to determine which type of map should be created.
    * Given the attributes set on the element, creates either a standard basemap, a custom vector basemap,
-   * or a web map.
+   * or a web scene.
    */
-  private createEsriMap() {
+  private createEsriScene() {
     return new Promise((mapCreated, mapFailed) => {
-      if (isValidItemID(this.webmap)) {
-        // If webmap provided, assume a valid item ID and try to create a WebMap from it.
+      if (isValidItemID(this.webscene)) {
+        // If webscene provided, assume a valid item ID and try to create a WebScene from it.
         loadModules(
-          ["esri/WebMap"],
+          ["esri/WebScene"],
           this.esriMapOptions
         ).then(
-          ([WebMap]: [
-            __esri.WebMapConstructor
+          ([WebScene]: [
+            __esri.WebSceneConstructor
           ]) => {
-            this.esriWebMap = new WebMap({
+            this.esriWebScene = new WebScene({
               portalItem: {
-                id: this.webmap
+                id: this.webscene
               }
             });
             mapCreated();
@@ -164,8 +175,8 @@ export class EsriMapView {
           mapFailed(loadException);
         });
       } else if (isValidItemID(this.basemap)) {
-        // if the basemap looks like an item ID then assume it is a custom vector map. If it is not (e.g. it's actually a webmap)
-        // then this isn't going to work. use `webmap` instead!
+        // if the basemap looks like an item ID then assume it is a custom vector map. If it is not (e.g. it's actually a webscene)
+        // then this isn't going to work. use `webscene` instead!
         loadModules([
             "esri/Map",
             "esri/Basemap",
@@ -210,7 +221,8 @@ export class EsriMapView {
             __esri.MapConstructor
           ]) => {
             this.esriMap = new Map({
-              basemap: this.basemap
+              basemap: this.basemap,
+              ground: "world-elevation"
             });
             mapCreated();
           }
@@ -223,28 +235,44 @@ export class EsriMapView {
   }
 
   /**
-   * Creates the mapview used in the component. Assumes the map was created before getting here.
+   * Creates the SceneView used in the component. Assumes the map was created before getting here.
    */
-  private createEsriMapView() {
-    return loadModules(["esri/views/MapView"], this.esriMapOptions).then(
-      ([EsriMapView]: [__esri.MapViewConstructor]) => {
+  private createEsriSceneView() {
+    return loadModules(["esri/views/SceneView"], this.esriMapOptions).then(
+      ([EsriSceneView]: [__esri.SceneViewConstructor]) => {
         const mapDiv = this.hostElement.querySelector("div");
 
-        if (this.webmap && !this.parsedViewpoint) {
-          // A web map and no initial viewpoint specified will use the viewpoint set in the web map.
-          this.esriMapView = new EsriMapView({
+        if (this.webscene && !this.cameraSettings && !this.parsedViewpoint) {
+          // A web scene and no initial viewpoint specified will use the viewpoint set in the web scene.
+          this.esriSceneView = new EsriSceneView({
             container: mapDiv,
-            map: this.esriWebMap
+            map: this.esriWebScene
           });
         } else {
-          this.esriMapView = new EsriMapView({
-            container: mapDiv,
-            zoom: this.levelOfDetail,
-            center: [this.longitude, this.latitude],
-            map: this.esriMap || this.esriWebMap
-          });
+          if (this.cameraSettings) {
+            this.esriSceneView = new EsriSceneView({
+              container: mapDiv,
+              map: this.esriMap || this.esriWebScene,
+              camera: {
+                position: {
+                  x: this.cameraSettings.x,
+                  y: this.cameraSettings.y,
+                  z: this.cameraSettings.z
+                },
+                heading: this.cameraSettings.heading,
+                tilt: this.cameraSettings.tilt
+              }
+            });
+          } else {
+            this.esriSceneView = new EsriSceneView({
+              container: mapDiv,
+              zoom: this.levelOfDetail,
+              center: [this.longitude, this.latitude],
+              map: this.esriMap || this.esriWebScene
+            });
+          }
         }
-        if (this.esriMapView) {
+        if (this.esriSceneView) {
           if (this.layers) {
             this.addLayers(this.layers);
           }
@@ -304,10 +332,10 @@ export class EsriMapView {
     return loadModules(["esri/widgets/Search"], this.esriMapOptions).then(
       ([SearchWidget]: [__esri.widgetsSearchConstructor]) => {
         const searchWidget = new SearchWidget({
-          view: this.esriMapView
+          view: this.esriSceneView
         });
 
-        this.esriMapView.ui.add(searchWidget, {
+        this.esriSceneView.ui.add(searchWidget, {
           position: position,
           index: 0
         });
@@ -315,7 +343,7 @@ export class EsriMapView {
     );
   }
 
-  /**
+    /**
    * Show a symbol on the map at the initial viewpoint location.
    * @param symbol {string} Either an asset id of a local symbol asset or a fully qualified URL to a PNG to use as the symbol.
    */
@@ -366,7 +394,7 @@ export class EsriMapView {
             content: this.popupinfo
           }
         });
-        this.esriMapView.graphics.add(symbolGraphic);
+        this.esriSceneView.graphics.add(symbolGraphic);
       }
     );
   }
@@ -416,13 +444,13 @@ export class EsriMapView {
             content: this.popupinfo
           }
         });
-        this.esriMapView.graphics.add(symbolGraphic);
+        this.esriSceneView.graphics.add(symbolGraphic);
       }
     );
   }
 
   render() {
-    return <div class="esri-map-view" />;
+    return <div class="esri-scene-view" />;
   }
 
   /**
@@ -431,26 +459,30 @@ export class EsriMapView {
    */
   private verifyProps(): boolean {
     let isValid:boolean = false;
-    if (this.webmap && !isValidItemID(this.webmap)) {
-      // if a web map is specified but it is not an item ID then ignore it.
+    if (this.webscene && !isValidItemID(this.webscene)) {
+      // if a web scene is specified but it is not an item ID then ignore it.
       // TODO: What about a service URL?
-      this.webmap = null;
+      this.webscene = null;
     }
-    if (!this.basemap && !this.webmap) {
+    if (!this.basemap && !this.webscene) {
       // If there is no basemap and no web map then use a default basemap, no point to rendering nothing.
       this.basemap = "osm";
     }
-    if (!this.viewpoint && !this.webmap) {
-      // if no initial viewpoint is specified then set some default
-      this.viewpoint = "0,0,2";
-    }
-    if (this.viewpoint) {
-      // if given an initial viewpoint then try to valid each part
-      const parsedViewpoint:viewpointProps = parseViewpoint(this.viewpoint);
-      this.longitude = parsedViewpoint.longitude;
-      this.latitude = parsedViewpoint.latitude;
-      this.levelOfDetail = parsedViewpoint.levelOfDetail;
-      this.parsedViewpoint = true;
+    if (this.cameraPosition) {
+      this.cameraSettings = parseCameraPosition(this.cameraPosition);
+    } else {
+      if (!this.viewpoint && !this.webscene) {
+        // if no initial viewpoint is specified then set some default
+        this.viewpoint = "0,0,2";
+      }
+      if (this.viewpoint) {
+        // if given an initial viewpoint then try to valid each part
+        const parsedViewpoint:viewpointProps = parseViewpoint(this.viewpoint);
+        this.longitude = parsedViewpoint.longitude;
+        this.latitude = parsedViewpoint.latitude;
+        this.levelOfDetail = parsedViewpoint.levelOfDetail;
+        this.parsedViewpoint = true;
+      }
     }
     this.parsedOffset = parseOffset(this.symboloffset);
     if (this.search && !isValidSearchPosition(this.search)) {

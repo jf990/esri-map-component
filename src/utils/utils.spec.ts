@@ -1,4 +1,14 @@
-import { parseViewpoint, parseOffset, isValidItemID, isValidURL, isValidSearchPosition } from './utils';
+/**
+ * Unit tests for functions exported in utils.ts.
+ */
+import {
+  parseViewpoint,
+  parseCameraPosition,
+  parseOffset,
+  isValidItemID,
+  isValidURL,
+  isValidSearchPosition
+} from './utils';
 
 describe('parseViewpoint', () => {
   it('returns object for no valid input', () => {
@@ -52,6 +62,58 @@ describe('parseViewpoint', () => {
       latitude: 40.872496,
       levelOfDetail: 9,
       scale: 0
+    });
+  });
+});
+
+describe('parseCameraPosition', () => {
+  it('parseCameraPosition returns object for no valid input', () => {
+    expect(parseCameraPosition(undefined)).toEqual({
+      x: 0,
+      y: 0,
+      z: 50000,
+      heading: 90,
+      tilt: 0
+    });
+  });
+
+  it('parseCameraPosition returns missing values', () => {
+    expect(parseCameraPosition("1,2,3")).toEqual({
+      x: 1,
+      y: 2,
+      z: 3,
+      heading: 90,
+      tilt: 0
+    });
+  });
+
+  it('parseCameraPosition returns missing values', () => {
+    expect(parseCameraPosition("1,")).toEqual({
+      x: 1,
+      y: 0,
+      z: 50000,
+      heading: 90,
+      tilt: 0
+    });
+  });
+
+  it('parseCameraPosition returns missing values', () => {
+    expect(parseCameraPosition("1,2,3,4")).toEqual({
+      x: 1,
+      y: 2,
+      z: 3,
+      heading: 4,
+      tilt: 0
+    });
+  });
+
+  it('parseCameraPosition returns all values', () => {
+    expect(parseCameraPosition("1,2,3,4,5")).toEqual({
+      x: 1,
+      y: 2,
+      z: 3,
+      heading: 4,
+      tilt: 5
     });
   });
 });
