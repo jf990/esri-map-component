@@ -4,7 +4,7 @@
 
 # Esri Map View
 
-This is a web component to display an Esri map on a web page. It is built from the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/) and [Stencil](https://github.com/ionic-team/stencil-component-starter) starter project for building standalone Web Components.
+This is a custom web component to display an Esri map or scene on a web page. It is built from the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/) and [Stencil](https://github.com/ionic-team/stencil-component-starter) starter project for building standalone Web Components.
 
 There are two components in this library: `esri-map-view` and `esri-scene-view`. They mostly work the
 same while `esri-map-view` displays a map in a 2D map view and `esri-scene-view` displays a 3D map in
@@ -46,14 +46,16 @@ All attributes are optional. If an attribute is not provided then a default is u
 
 ## Usage
 
-This is a web component designed to be used on a web page without any JavaScript coding. It supports setting up the map through tag attributes.
+This is a custom web component designed to be used on a web page without any JavaScript coding. It supports setting up the map through tag attributes.
 
 **Map View**
+
 ```html
 <esri-map-view webmap="96a43d02861547e3ad4e4b91df867660" search="top-right"></esri-map-view>
 ```
 
 **Scene View**
+
 ```html
 <esri-scene-view webscene="96a43d02861547e3ad4e4b91df867660" search="top-right"></esri-map-view>
 ```
@@ -61,6 +63,8 @@ This is a web component designed to be used on a web page without any JavaScript
 It can be added to a page with a script tag or using a module package manager.
 
 ### Script tag
+
+[Review the demo in `demos/www-demo`](demos/www-demo/README.md).
 
 - Include a script tag on your page
 
@@ -77,6 +81,8 @@ Then you can use the element anywhere in your HTML, template, JSX, etc.
 - Use the element anywhere in your HTML, template, JSX, etc.
 
 ### Webpack
+
+[Review the demo in `demos/webpack-demo`](demos/webpack-demo/README.md).
 
 - Run `npm install esri-map-view --save` to add the module to your `package.json`.
 - Import the module in your JavaScript code `import esri-map-view;`.
