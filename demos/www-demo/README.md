@@ -6,12 +6,12 @@ Review the code in `index.html`.
 
 1. Load the script from the npm CDN:
 
-```html
-<script src='https://unpkg.com/esri-map-view@0.2.2/dist/esri-map-view.js'></script>
-```
+   ```html
+   <script src='https://unpkg.com/esri-map-view@0.2.2/dist/esri-map-view.js'></script>
+   ```
 
-1. Setup the HTML and CSS for your use of the custom component:
+2. Setup the HTML and CSS for your use of the custom component:
 
-```html
-<esri-map-view ...></esri-map-view>
-```
+   ```html
+   <esri-map-view ...></esri-map-view>
+   ```
