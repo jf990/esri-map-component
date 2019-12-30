@@ -21,7 +21,7 @@ import {
 export class EsriMapView {
   @Element() hostElement: HTMLElement;
 
-  private javascript_api_version: string = "4.13";
+  private javascript_api_version: string = "4.14";
   private asset_path = getAssetPath("./assets/");
 
   /**
