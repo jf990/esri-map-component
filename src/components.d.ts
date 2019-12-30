@@ -61,7 +61,6 @@ export namespace Components {
     * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.
     */
     'layers': string;
-    'name': string;
     /**
     * If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.
     */
@@ -71,7 +70,7 @@ export namespace Components {
     */
     'popuptitle': string;
     /**
-    * Include a search widget by indicating where on the map view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
+    * Include a search widget by indicating where on the scene view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
     */
     'search': string;
     /**
@@ -165,7 +164,6 @@ declare namespace LocalJSX {
     * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.
     */
     'layers'?: string;
-    'name'?: string;
     /**
     * If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.
     */
@@ -175,7 +173,7 @@ declare namespace LocalJSX {
     */
     'popuptitle'?: string;
     /**
-    * Include a search widget by indicating where on the map view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
+    * Include a search widget by indicating where on the scene view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
     */
     'search'?: string;
     /**

@@ -4,11 +4,26 @@
 
 # Esri Map View
 
-This is a custom web component to display an Esri map or scene on a web page. It is built from the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/) and [Stencil](https://github.com/ionic-team/stencil-component-starter) starter project for building standalone Web Components.
+This is a custom web component to display an Esri map (2D flat map) or scene (3D globe) on a web page. You can place a map on any webpage inside a `div` without writing any JavaScript code. It is built from the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/), [Esri Loader](https://www.npmjs.com/package/esri-loader), and [Stencil](https://github.com/ionic-team/stencil-component-starter) starter project for building standalone Web Components.
 
 There are two components in this library: `esri-map-view` and `esri-scene-view`. They mostly work the
-same while `esri-map-view` displays a map in a 2D map view and `esri-scene-view` displays a 3D map in
+same: `esri-map-view` displays a map in a 2D map view and `esri-scene-view` displays a 3D globe in
 a scene view.
+
+### Example map view
+
+```html
+  <esri-map-view
+    basemap="osm"
+    viewpoint="13.3761697,52.5166449,15"
+    layers="d3e5c29f5e404aa4b2de29a9f0e37996"
+    search="top-right"
+    symbol="pin:red"
+    symboloffset="0,0"
+    popuptitle="Brandenburg Gate"
+    popupinfo="This is a historic place you should visit">
+  </esri-map-view>
+```
 
 ## Attributes for `esri-map-view`
 
@@ -25,22 +40,36 @@ All attributes are optional. If an attribute is not provided then a default is u
 | `viewpoint`  | `viewpoint`  | Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint would be used. | `string` | `""`    |
 | `webmap`     | `webmap`     | Indicate a web map id to use for the map. If neither `webmap` nor `basemap` are set, then a default basemap is assigned.                                                                                                                                                                                                                  | `string` | `""`    |
 
+### Example scene view
+
+```html
+  <esri-scene-view
+    basemap="satellite"
+    layers="d3e5c29f5e404aa4b2de29a9f0e37996"
+    search="top-right"
+    symbol="pin:red"
+    viewpoint="13.3761697,52.5166449,15"
+    popuptitle="Brandenburg Gate"
+    popupinfo="This is a historic place you should visit">
+  </esri-scene-view>
+```
+
 ## Attributes for `esri-scene-view`
 
 All attributes are optional. If an attribute is not provided then a default is used. If no attributes are set then an Open Street Map basemap is used. If a web scene is used then the initial viewpoint in the web scene is used. Override this by setting `cameraPosition` or `viewpoint`. If both are set then `cameraPosition` overrides `viewpoint`.
 
 | Property         | Attribute         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                   | Type     | Default  |
 | ---------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- |
-| `basemap`        | `basemap`         | Indicate a basemap id to use for the map. This property will be overridden by `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then a default basemap is assigned.                                                                                                                                                                                                                                          | `string` | `"osm"`  |
-| `cameraPosition` | `camera-position` | Indicate the camera position for the initial scene viewpoint. This is a string of five comma separated numbers as follows: x,y,z,tilt,roll                                                                                                                                                                                                                                                                                                    | `string` | `""`     |
-| `layers`         | `layers`          | Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.                                                                                                                                                                                                                              | `string` | `""`     |
-| `popupinfo`      | `popupinfo`       | If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.                                                                                                                                                                                                                                                                                                                                              | `string` | `""`     |
-| `popuptitle`     | `popuptitle`      | If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.                                                                                                                                                                                                                                                                                                                                                | `string` | `""`     |
-| `search`         | `search`          | Include a search widget by indicating where on the map view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.                                                                                                                                                                      | `string` | `""`     |
-| `symbol`         | `symbol`          | Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.                                       | `string` | `""`     |
-| `symboloffset`   | `symboloffset`    | Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.                                                                                                                                                                                                                             | `string` | `""`     |
-| `viewpoint`      | `viewpoint`       | Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position. | `string` | `""`     |
-| `webscene`       | `webscene`        | Indicate a web scene id to use for the map. If neither `webscene` nor `basemap` are set, then a default basemap is assigned.                                                                                                                                                                                                                                                                                                                  | `string` | `""`     |
+| `basemap`        | `basemap`         | Indicate a basemap id to use for the map. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned.                                                                                                                                                                                                                                                                                                                                                                         | `string` | `"osm"` |
+| `cameraPosition` | `camera-position` | Indicate the camera position for the initial scene viewpoint. This is a string of five comma separated numbers as follows: x,y,z,heading,tilt. If you set this it will override `viewpoint` settings.                                                                                                                                                                                                                                                                                                                                                                            | `string` | `""`    |
+| `layers`         | `layers`          | Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.                                                                                                                                                                                                                                                                                                                                                                 | `string` | `""`    |
+| `popupinfo`      | `popupinfo`       | If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `string` | `""`    |
+| `popuptitle`     | `popuptitle`      | If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `string` | `""`    |
+| `search`         | `search`          | Include a search widget by indicating where on the scene view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.                                                                                                                                                                                                                                                                                                       | `string` | `""`    |
+| `symbol`         | `symbol`          | Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.                                                                                                                                                                          | `string` | `""`    |
+| `symboloffset`   | `symboloffset`    | Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.                                                                                                                                                                                                                                                                                                                                                                | `string` | `""`    |
+| `viewpoint`      | `viewpoint`       | Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. However, this setting will override the web scenes initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position. | `string` | `""`    |
+| `webscene`       | `webscene`        | Indicate a web scene id to use for the map. If neither `webscene` nor `basemap` are set, then a default basemap is assigned.                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `string` | `""`    |
 
 ----------------------------------------------
 
@@ -48,13 +77,13 @@ All attributes are optional. If an attribute is not provided then a default is u
 
 This is a custom web component designed to be used on a web page without any JavaScript coding. It supports setting up the map through tag attributes.
 
-**Map View**
+### Map View
 
 ```html
 <esri-map-view webmap="96a43d02861547e3ad4e4b91df867660" search="top-right"></esri-map-view>
 ```
 
-**Scene View**
+### Scene View
 
 ```html
 <esri-scene-view webscene="96a43d02861547e3ad4e4b91df867660" search="top-right"></esri-map-view>

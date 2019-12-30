@@ -71,7 +71,7 @@ export class EsriSceneView {
   @Prop() layers: string = "";
 
   /**
-   * Include a search widget by indicating where on the map view it should appear. The valid values for this
+   * Include a search widget by indicating where on the scene view it should appear. The valid values for this
    * attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing
    * or an invalid value then a search widget will not show.
    */
@@ -114,8 +114,6 @@ export class EsriSceneView {
   parsedViewpoint: boolean = false;
   parsedOffset: offsetProps;
   cameraSettings: cameraProps = null;
-
-  @Prop() name: string = "Esri";
 
   constructor() {
     this.verifyProps();
@@ -465,7 +463,7 @@ export class EsriSceneView {
       this.webscene = null;
     }
     if (!this.basemap && !this.webscene) {
-      // If there is no basemap and no web map then use a default basemap, no point to rendering nothing.
+      // If there is no basemap and no web scene then use a default basemap, no point to rendering nothing.
       this.basemap = "osm";
     }
     if (this.cameraPosition) {
