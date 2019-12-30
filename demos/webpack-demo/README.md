@@ -18,12 +18,13 @@ Using the custom component with [webpack](https://webpack.js.org/) is a little t
 
 2. Update web-pack-config.js
 
-   ```json
+   ```javascript
     "plugins": [
-    new stencil.StencilPlugin({
-      collections: [
-        'node-modules/esri-map-view/dist/esri-map-view'
-      ]})
+      new stencil.StencilPlugin({
+        collections: [
+          'node-modules/esri-map-view/dist/esri-map-view'
+        ]
+      })
     ]
    ```
 
