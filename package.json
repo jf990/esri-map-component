@@ -1,6 +1,6 @@
 {
   "name": "esri-map-view",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Display an Esri map view as a web component.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
