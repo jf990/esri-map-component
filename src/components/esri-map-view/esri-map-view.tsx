@@ -48,7 +48,8 @@ export class EsriMapView {
    * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers
    * expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9".
    * You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as
-   * the web map's initial viewpoint is used.
+   * the web map's initial viewpoint is used. If you do set `viewpoint` and `webmap` then this
+   * setting will override the initial viewpoint of the web map.
    */
   @Prop() viewpoint: string = "";
 
