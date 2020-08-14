@@ -284,7 +284,7 @@ export class EsriSceneView {
 
   /**
    * Add layers to the map. Each layer can be specified by its item ID or its service URL.
-   * @param layers {string} A list of 1 or more layers where multiple layers are separated with commas.
+   * @param {string} layers A list of 1 or more layers where multiple layers are separated with commas.
    */
   private addLayers(layers: string) {
     const layersList = layers.split(",");
@@ -323,10 +323,10 @@ export class EsriSceneView {
 
   /**
    * Create a search widget and add it to the view at the given UI position.
-   * @param position {string} The UI position where to place the search widget in the view.
+   * @param {string} searchWidgetPosition The UI position where to place the search widget in the view.
    * @returns {Promise} A Promise is returned to load the Search Widget module.
    */
-  private createSearchWidget(position: string) {
+  private createSearchWidget(searchWidgetPosition: string) {
     return loadModules(["esri/widgets/Search"], this.esriMapOptions).then(
       ([SearchWidget]: [__esri.widgetsSearchConstructor]) => {
         const searchWidget = new SearchWidget({
@@ -334,16 +334,16 @@ export class EsriSceneView {
         });
 
         this.esriSceneView.ui.add(searchWidget, {
-          position: position,
+          position: searchWidgetPosition,
           index: 0
-        });
+        } as __esri.UIAddPosition);
       }
     );
   }
 
     /**
    * Show a symbol on the map at the initial viewpoint location.
-   * @param symbol {string} Either an asset id of a local symbol asset or a fully qualified URL to a PNG to use as the symbol.
+   * @param {string} symbol Either an asset id of a local symbol asset or a fully qualified URL to a PNG to use as the symbol.
    */
   private showSymbol(symbol: string) {
     let symbolURL;
@@ -399,7 +399,7 @@ export class EsriSceneView {
 
   /**
    * Show a pin on the map at the initial viewpoint location.
-   * @param pinColor {string} The color value of the pin symbol.
+   * @param {string} pinColor The color value of the pin symbol.
    */
   private showPin(pinColor: string) {
     return loadModules([
