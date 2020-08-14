@@ -21,7 +21,7 @@ import {
 export class EsriMapView {
   @Element() hostElement: HTMLElement;
 
-  private javascript_api_version: string = "4.14";
+  private javascript_api_version: string = "4.16";
   private asset_path = getAssetPath("./assets/");
 
   /**
@@ -109,7 +109,7 @@ export class EsriMapView {
     loadCss(`${this.esriMapOptions.url}/esri/css/main.css`);
     this.createEsriMap()
     .then(() => {
-      console.log("Map should be showing");
+      // console.log("Map should be showing");
     })
     .catch((mapLoadingException) => {
       console.log(`Map loading failed ${mapLoadingException.toString()}`);

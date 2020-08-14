@@ -74,6 +74,10 @@ All attributes are optional. If an attribute is not provided then a default is u
 
 ----------------------------------------------
 
+## Maps, scenes, and layers
+
+For more information about using ArcGIS maps, scenes, and layers visit https://developers.arcgis.com/javascript/latest/api-reference/.
+
 ## Usage
 
 This is a custom web component designed to be used on a web page without any JavaScript coding. It supports setting up the map through tag attributes.
@@ -99,7 +103,7 @@ It can be added to a page with a script tag or using a module package manager.
 - Include a script tag on your page
 
 ```html
-<script src='https://unpkg.com/esri-map-view@0.3.1/dist/esri-map-view.js'></script>
+<script src='https://unpkg.com/esri-map-view@0.3.5/dist/esri-map-view.js'></script>
 ```
 
 Then you can use the element anywhere in your HTML, template, JSX, etc.

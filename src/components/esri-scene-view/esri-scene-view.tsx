@@ -23,7 +23,7 @@ import {
 export class EsriSceneView {
   @Element() hostElement: HTMLElement;
 
-  private javascript_api_version: string = "4.14";
+  private javascript_api_version: string = "4.16";
   private asset_path = getAssetPath("./assets/");
 
   /**
@@ -120,7 +120,7 @@ export class EsriSceneView {
     loadCss(`${this.esriMapOptions.url}/esri/themes/light/main.css`);
     this.createEsriScene()
     .then(() => {
-      console.log("Map scene should be showing");
+      // console.log("Map scene should be showing");
     })
     .catch((mapLoadingException) => {
       console.log(`Map loading failed ${mapLoadingException.toString()}`);
