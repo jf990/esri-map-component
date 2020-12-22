@@ -1,18 +1,18 @@
 {
   "name": "esri-map-view",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Display an Esri map view as a web component.",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "es2015": "dist/esm/index.mjs",
-  "es2017": "dist/esm/index.mjs",
-  "types": "dist/types/components.d.ts",
-  "collection": "dist/collection/collection-manifest.json",
-  "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/esri-map-view/esri-map-view.js",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.js",
+  "es2015": "./dist/esm/index.mjs",
+  "es2017": "./dist/esm/index.mjs",
+  "types": "./dist/types/components.d.ts",
+  "collection": "./dist/collection/collection-manifest.json",
+  "collection:main": "./dist/collection/index.js",
+  "unpkg": "./dist/esri-map-view/esri-map-view.js",
   "files": [
-    "dist/",
-    "loader/"
+    "./dist/",
+    "./loader/"
   ],
   "scripts": {
     "build": "stencil build --docs",
@@ -23,16 +23,16 @@
     "generate": "stencil generate"
   },
   "dependencies": {
-    "esri-loader": "^2.15.0"
+    "esri-loader": "^2.16.0"
   },
   "devDependencies": {
-    "@stencil/core": "^1.17.3",
-    "@types/arcgis-js-api": "4.16.0",
-    "@types/jest": "26.0.9",
+    "@stencil/core": "^2.3.0",
+    "@types/arcgis-js-api": "4.18.0",
+    "@types/jest": "26.0.19",
     "@types/puppeteer": "3.0.1",
-    "jest": "26.4.0",
-    "jest-cli": "26.4.0",
-    "puppeteer": "5.2.1"
+    "jest": "26.6.3",
+    "jest-cli": "26.6.3",
+    "puppeteer": "5.5.0"
   },
   "license": "MIT",
   "repository": {
