@@ -14,6 +14,7 @@ a scene view.
 
 ```html
   <esri-map-view
+    apikey="YOUR_API_KEY"
     basemap="osm"
     viewpoint="13.3761697,52.5166449,15"
     layers="d3e5c29f5e404aa4b2de29a9f0e37996"
@@ -45,6 +46,7 @@ All attributes are optional. If an attribute is not provided then a default is u
 
 ```html
   <esri-scene-view
+    apikey="YOUR_API_KEY"
     basemap="satellite"
     layers="d3e5c29f5e404aa4b2de29a9f0e37996"
     search="top-right"
@@ -103,7 +105,7 @@ It can be added to a page with a script tag or using a module package manager.
 - Include a script tag on your page
 
 ```html
-<script src='https://unpkg.com/esri-map-view@0.3.5/dist/esri-map-view.js'></script>
+<script src='https://unpkg.com/esri-map-view@0.4.1/dist/esri-map-view.js'></script>
 ```
 
 Then you can use the element anywhere in your HTML, template, JSX, etc.
@@ -138,4 +140,4 @@ Please abide by our [Code of conduct](./CODE_OF_CONDUCT.md) when participating i
 
 ## License
 
-[MIT License](./LICENSE). Copyright (c) 2019.
+[MIT License](./LICENSE). Copyright (c) 2021.

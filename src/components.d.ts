@@ -8,6 +8,10 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface EsriMapView {
         /**
+          * Set your API key. See the section on [API keys](https://developers.arcgis.com/documentation/security-and-authentication/api-keys/).
+         */
+        "apikey": string;
+        /**
           * Indicate a basemap id to use for the map. This property will be overridden by `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
          */
         "basemap": string;
@@ -45,6 +49,10 @@ export namespace Components {
         "webmap": string;
     }
     interface EsriSceneView {
+        /**
+          * Set your API key. See the section on [API keys](https://developers.arcgis.com/documentation/security-and-authentication/api-keys/).
+         */
+        "apikey": string;
         /**
           * Indicate a basemap id to use for the map. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
          */
