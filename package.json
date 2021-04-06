@@ -23,7 +23,7 @@
     "generate": "stencil generate"
   },
   "dependencies": {
-    "esri-loader": "^2.16.0"
+    "@arcgis/core": "^4.18.1"
   },
   "devDependencies": {
     "@stencil/core": "^2.5.2",
