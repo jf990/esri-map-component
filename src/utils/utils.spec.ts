@@ -7,8 +7,7 @@ import {
   parseOffset,
   isValidItemID,
   isValidURL,
-  isValidSearchPosition,
-  getApiKey
+  isValidSearchPosition
 } from './utils';
 
 describe('parseViewpoint', () => {
