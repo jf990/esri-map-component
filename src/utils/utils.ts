@@ -13,7 +13,6 @@
  * @returns {viewpointProps} An object made up of {longitude, latitude,
  *   levelOfDetail, scale}
  */
-import {API_KEY} from "../secret";
 
 export interface viewpointProps {
   longitude: number,
@@ -133,21 +132,4 @@ export function isValidURL(url: string): boolean {
  */
 export function isValidSearchPosition(position: string): boolean {
   return ["top-left", "top-right", "bottom-left", "bottom-right"].indexOf(position) >= 0;
-}
-
-/**
- * Return the api key if one is provided otherwise get it from the .env
- * @param apiKey {string} existing API key if you have one.
- * @returns string API key
- */
-export function getApiKey(apiKey): string {
-  if (apiKey == undefined || apiKey == null || apiKey == "" || apiKey == "YOUR_API_KEY") {
-    if (API_KEY) {
-      return API_KEY;
-    } else {
-      return "You-must-set-apikey";
-    }
-  } else {
-    return apiKey;
-  }
 }

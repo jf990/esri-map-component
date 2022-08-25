@@ -12,6 +12,13 @@ export const config: Config = {
     },
     {
       type: 'www',
+      copy: [
+        {
+          src: "secret.js",
+          dest: "build/secret.js",
+          warn: true
+        }
+      ],
       serviceWorker: null // disable service workers
     }
   ],

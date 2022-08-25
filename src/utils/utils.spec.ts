@@ -203,13 +203,3 @@ describe("Valid search position", () => {
     expect(isValidSearchPosition("1234")).toBeFalsy();
   });
 });
-
-describe("Get apiKey", () => {
-
-  it('returns key for valid input', () => {
-    expect(getApiKey("")).toBeTruthy();
-    expect(getApiKey(undefined)).toBeTruthy();
-    expect(getApiKey(null)).toBeTruthy();
-    expect(getApiKey("AAPK1234")).toBe("AAPK1234");
-  });
-});

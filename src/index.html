@@ -46,6 +46,7 @@
   <div class="map-row">
       <div class="column-left">
         <esri-map-view
+          id="mapview"
           apikey="YOUR_API_KEY"
           basemap="osm-streets"
           viewpoint="13.3761697,52.5166449,15"
@@ -59,7 +60,7 @@
       </div>
       <div class="column-right">
         <esri-scene-view
-          name="dodo"
+          id="sceneview"
           apikey="YOUR_API_KEY"
           basemap="arcgis-imagery-standard"
           viewpoint="13.3761697,52.5166449,15"
@@ -72,6 +73,7 @@
         </esri-scene-view>
       </div>
     </div>
+    <script src="/build/secret.js"></script>
 
 </body>
 </html>

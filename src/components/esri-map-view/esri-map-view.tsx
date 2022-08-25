@@ -23,8 +23,7 @@ import {
   offsetProps,
   isValidItemID,
   isValidURL,
-  isValidSearchPosition,
-  getApiKey
+  isValidSearchPosition
 } from "../../utils/utils";
 
 @Component({
@@ -117,9 +116,8 @@ export class EsriMapView {
 
   constructor() {
     this.verifyProps();
-    const apiKey = getApiKey(this.apikey);
-    if (apiKey) {
-      esriConfig.apiKey = apiKey;
+    if (this.apikey) {
+      esriConfig.apiKey = this.apikey;
     } else {
       esriConfig.request.useIdentity = true;
     }
