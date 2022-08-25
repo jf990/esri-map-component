@@ -2,7 +2,20 @@
  * <esri-map-view> a custom web component for rendering a 2D map on a web page.
  */
 import { Component, h, Prop, Element, getAssetPath } from "@stencil/core";
-import { loadCss, loadModules } from "esri-loader";
+import esriConfig from "@arcgis/core/config.js";
+import Map from '@arcgis/core/Map';
+import MapView from '@arcgis/core/views/MapView';
+import Basemap from '@arcgis/core/Basemap';
+import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
+import Layer from "@arcgis/core/layers/Layer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import PortalItem from "@arcgis/core/portal/PortalItem";
+import WebMap from '@arcgis/core/WebMap';
+import TextSymbol from "@arcgis/core/symbols/TextSymbol";
+import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
+import Graphic from "@arcgis/core/Graphic";
+import Point from "@arcgis/core/geometry/Point";
+import SearchWidget from "@arcgis/core/Widgets/Search";
 import {
   parseViewpoint,
   viewpointProps,
@@ -21,15 +34,12 @@ import {
 export class EsriMapView {
   @Element() hostElement: HTMLElement;
 
-  private javascript_api_version: string = "4.16";
   private asset_path = getAssetPath("./assets/");
 
   /**
-   * esri-loader options
+   * Set your API key. See the section on [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
    */
-  esriMapOptions = {
-    url: `https://js.arcgis.com/${this.javascript_api_version}/`
-  };
+  @Prop() apikey: string = "YOUR_API_KEY";
 
   /**
    * Indicate a basemap id to use for the map. This property will be overridden by
@@ -106,7 +116,11 @@ export class EsriMapView {
 
   constructor() {
     this.verifyProps();
-    loadCss(`${this.esriMapOptions.url}/esri/css/main.css`);
+    if (this.apikey) {
+      esriConfig.apiKey = this.apikey;
+    } else {
+      esriConfig.request.useIdentity = true;
+    }
     this.createEsriMap()
     .then(() => {
       // console.log("Map should be showing");
@@ -129,7 +143,7 @@ export class EsriMapView {
     .then(() => {
       if (this.symbol) {
         if (this.symbol.indexOf("pin:") === 0) {
-          this.showPin(this.symbol.substr(4));
+          this.showPin(this.symbol.substring(4));
         } else {
           this.showSymbol(this.symbol);
         }
@@ -143,82 +157,38 @@ export class EsriMapView {
    * or a web map.
    */
   private createEsriMap() {
-    return new Promise((mapCreated, mapFailed) => {
-      if (isValidItemID(this.webmap)) {
-        // If webmap provided, assume a valid item ID and try to create a WebMap from it.
-        loadModules(
-          ["esri/WebMap"],
-          this.esriMapOptions
-        ).then(
-          ([WebMap]: [
-            __esri.WebMapConstructor
-          ]) => {
-            this.esriWebMap = new WebMap({
-              portalItem: {
-                id: this.webmap
-              }
-            });
-            mapCreated();
+    const esriMapComponent = this;
+    return new Promise((mapCreated) => {
+      if (isValidItemID(esriMapComponent.webmap)) {
+        // If web map provided, assume a valid item ID and try to create a WebMap from it.
+        esriMapComponent.esriWebMap = new WebMap({
+          portalItem: {
+            id: esriMapComponent.webmap
           }
-        )
-        .catch((loadException) => {
-          mapFailed(loadException);
         });
-      } else if (isValidItemID(this.basemap)) {
-        // if the basemap looks like an item ID then assume it is a custom vector map. If it is not (e.g. it's actually a webmap)
+        mapCreated(1);
+      } else if (isValidItemID(esriMapComponent.basemap)) {
+        // if the basemap looks like an item ID then assume it is the user's custom vector map. If it is not (e.g. it's actually a webmap)
         // then this isn't going to work. use `webmap` instead!
-        loadModules([
-            "esri/Map",
-            "esri/Basemap",
-            "esri/layers/VectorTileLayer"
-          ],
-          this.esriMapOptions
-        ).then(
-          ([
-            Map,
-            Basemap,
-            VectorTileLayer
-          ]: [
-            __esri.MapConstructor,
-            __esri.BasemapConstructor,
-            __esri.VectorTileLayerConstructor
-          ]) => {
-            const customBasemap = new Basemap({
-              baseLayers: [
-                new VectorTileLayer({
-                  portalItem: {
-                    id: this.basemap
-                  }
-                })
-              ]
+        const customBasemap = new Basemap({
+          baseLayers: [
+            new VectorTileLayer({
+              portalItem: {
+                id: esriMapComponent.basemap
+              }
             })
-            this.esriMap = new Map({
-              basemap: customBasemap
-            });
-            mapCreated();
-          }
-        )
-        .catch((loadException) => {
-          mapFailed(loadException);
+          ]
+        })
+        esriMapComponent.esriMap = new Map({
+          basemap: customBasemap
         });
+        mapCreated(1);
       } else {
         // basemap is expected to be one of the string enumerations in the API (https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap)
-        loadModules(
-          ["esri/Map"],
-          this.esriMapOptions
-        ).then(
-          ([Map]: [
-            __esri.MapConstructor
-          ]) => {
-            this.esriMap = new Map({
-              basemap: this.basemap
-            });
-            mapCreated();
-          }
-        )
-        .catch((loadException) => {
-          mapFailed(loadException);
+        esriMapComponent.esriMap = new Map({
+          basemap: Basemap.fromId(esriMapComponent.basemap)
         });
+        mapCreated(1);
       }
     });
   }
@@ -227,34 +197,34 @@ export class EsriMapView {
    * Creates the mapview used in the component. Assumes the map was created before getting here.
    */
   private createEsriMapView() {
-    return loadModules(["esri/views/MapView"], this.esriMapOptions).then(
-      ([EsriMapView]: [__esri.MapViewConstructor]) => {
-        const mapDiv = this.hostElement.querySelector("div");
+    const esriMapComponent = this;
+    return new Promise(function(resolve) {
+      const mapDiv = esriMapComponent.hostElement.querySelector("div");
 
-        if (this.webmap && !this.parsedViewpoint) {
-          // A web map and no initial viewpoint specified will use the viewpoint set in the web map.
-          this.esriMapView = new EsriMapView({
-            container: mapDiv,
-            map: this.esriWebMap
-          });
-        } else {
-          this.esriMapView = new EsriMapView({
-            container: mapDiv,
-            zoom: this.levelOfDetail,
-            center: [this.longitude, this.latitude],
-            map: this.esriMap || this.esriWebMap
-          });
+      if (esriMapComponent.webmap && !esriMapComponent.parsedViewpoint) {
+        // A web map and no initial viewpoint specified will use the viewpoint set in the web map.
+        esriMapComponent.esriMapView = new MapView({
+          container: mapDiv,
+          map: esriMapComponent.esriWebMap
+        });
+      } else {
+        esriMapComponent.esriMapView = new MapView({
+          container: mapDiv,
+          zoom: esriMapComponent.levelOfDetail,
+          center: [esriMapComponent.longitude, esriMapComponent.latitude],
+          map: esriMapComponent.esriMap || esriMapComponent.esriWebMap
+        });
+      }
+      if (esriMapComponent.esriMapView) {
+        if (esriMapComponent.layers) {
+          esriMapComponent.addLayers(esriMapComponent.layers);
         }
-        if (this.esriMapView) {
-          if (this.layers) {
-            this.addLayers(this.layers);
-          }
-          if (isValidSearchPosition(this.search)) {
-            this.createSearchWidget(this.search);
-          }
+        if (isValidSearchPosition(esriMapComponent.search)) {
+          esriMapComponent.createSearchWidget(esriMapComponent.search);
         }
       }
-    );
+      resolve(1);
+    });
   }
 
   /**
@@ -273,25 +243,22 @@ export class EsriMapView {
     }
     // Only proceed with layer construction if we have layers we think we can load.
     if (layersList.length > 0) {
-      loadModules(["esri/layers/FeatureLayer", "esri/layers/Layer", "esri/portal/PortalItem"], this.esriMapOptions).then(
-        ([FeatureLayer, Layer, PortalItem]: [__esri.FeatureLayerConstructor, __esri.LayerConstructor, __esri.PortalItemConstructor]) => {
-          layersList.forEach((layerId:string) => {
-            if (isValidItemID(layerId)) {
-              const portalItem = new PortalItem({
-                id: layerId
-              });
-              Layer.fromPortalItem({portalItem: portalItem}).then(itemLayer => {
-                this.esriMap.add(itemLayer);
-              });
-            } else if (isValidURL(layerId)) {
-              const featureLayer = new FeatureLayer({
-                url: layerId
-              });
-              if (featureLayer) {
-                this.esriMap.add(featureLayer);
-              }
-            }
+      layersList.forEach((layerId:string) => {
+        if (isValidItemID(layerId)) {
+          const portalItem = new PortalItem({
+            id: layerId
           });
+          Layer.fromPortalItem({portalItem: portalItem}).then(itemLayer => {
+            this.esriMap.add(itemLayer);
+          });
+        } else if (isValidURL(layerId)) {
+          const featureLayer = new FeatureLayer({
+            url: layerId
+          });
+          if (featureLayer) {
+            this.esriMap.add(featureLayer);
+          }
+        }
       });
     }
   }
@@ -299,21 +266,16 @@ export class EsriMapView {
   /**
    * Create a search widget and add it to the view at the given UI position.
    * @param {string} searchWidgetPosition The UI position where to place the search widget in the view.
-   * @returns {Promise} A Promise is returned to load the Search Widget module.
    */
   private createSearchWidget(searchWidgetPosition: string) {
-    return loadModules(["esri/widgets/Search"], this.esriMapOptions).then(
-      ([SearchWidget]: [__esri.widgetsSearchConstructor]) => {
-        const searchWidget = new SearchWidget({
-          view: this.esriMapView
-        });
+      const searchWidget = new SearchWidget({
+        view: this.esriMapView
+      });
 
-        this.esriMapView.ui.add(searchWidget, {
-          position: searchWidgetPosition,
-          index: 0
-        } as __esri.UIAddPosition);
-      }
-    );
+      this.esriMapView.ui.add(searchWidget, {
+        position: searchWidgetPosition,
+        index: 0
+      } as __esri.UIAddPosition);
   }
 
   /**
@@ -334,42 +296,26 @@ export class EsriMapView {
       xoffset = this.parsedOffset.x.toString();
       yoffset = this.parsedOffset.y.toString();
     }
-    return loadModules([
-      "esri/symbols/PictureMarkerSymbol",
-      "esri/Graphic",
-      "esri/geometry/Point"
-    ], this.esriMapOptions).then(
-      ([
-        PictureMarkerSymbol,
-        Graphic,
-        Point
-      ]: [
-        __esri.PictureMarkerSymbolConstructor,
-        __esri.GraphicConstructor,
-        __esri.PointConstructor
-      ]) => {
-        const point = new Point({
-          longitude: this.longitude,
-          latitude: this.latitude
-        });
-        const pointSymbol = new PictureMarkerSymbol({
-          url: symbolURL,
-          width: "64px",
-          height: "64px",
-          xoffset: xoffset,
-          yoffset: yoffset
-        });
-        const symbolGraphic = new Graphic({
-          geometry: point,
-          symbol: pointSymbol,
-          popupTemplate: {
-            title: this.popuptitle,
-            content: this.popupinfo
-          }
-        });
-        this.esriMapView.graphics.add(symbolGraphic);
+    const point = new Point({
+      longitude: this.longitude,
+      latitude: this.latitude
+    });
+    const pointSymbol = new PictureMarkerSymbol({
+      url: symbolURL,
+      width: "64px",
+      height: "64px",
+      xoffset: xoffset,
+      yoffset: yoffset
+    });
+    const symbolGraphic = new Graphic({
+      geometry: point,
+      symbol: pointSymbol,
+      popupTemplate: {
+        title: this.popuptitle,
+        content: this.popupinfo
       }
-    );
+    });
+    this.esriMapView.graphics.add(symbolGraphic);
   }
 
   /**
@@ -377,49 +323,33 @@ export class EsriMapView {
    * @param {string} pinColor The color value of the pin symbol.
    */
   private showPin(pinColor: string) {
-    return loadModules([
-      "esri/symbols/TextSymbol",
-      "esri/Graphic",
-      "esri/geometry/Point"
-    ], this.esriMapOptions).then(
-      ([
-        TextSymbol,
-        Graphic,
-        Point
-      ]: [
-        __esri.TextSymbolConstructor,
-        __esri.GraphicConstructor,
-        __esri.PointConstructor
-      ]) => {
-        let xoffset = this.parsedOffset.x;
-        let yoffset = this.parsedOffset.y;
-        const point = new Point({
-          longitude: this.longitude,
-          latitude: this.latitude
-        });
-        const pointSymbol = new TextSymbol({
-          color: pinColor,
-          haloColor: "black",
-          haloSize: "1px",
-          text: "\ue61d", // esri-icon-map-pin
-          font: {
-            size: 30,
-            family: "CalciteWebCoreIcons"
-          },
-          xoffset: xoffset,
-          yoffset: yoffset
-        });
-        const symbolGraphic = new Graphic({
-          geometry: point,
-          symbol: pointSymbol,
-          popupTemplate: {
-            title: this.popuptitle,
-            content: this.popupinfo
-          }
-        });
-        this.esriMapView.graphics.add(symbolGraphic);
-      }
-    );
+      let xoffset = this.parsedOffset.x;
+      let yoffset = this.parsedOffset.y;
+      const point = new Point({
+        longitude: this.longitude,
+        latitude: this.latitude
+      });
+      const pointSymbol = new TextSymbol({
+        color: pinColor,
+        haloColor: "black",
+        haloSize: "1px",
+        text: "\ue61d", // esri-icon-map-pin
+        font: {
+          size: 30,
+          family: "CalciteWebCoreIcons"
+        },
+        xoffset: xoffset,
+        yoffset: yoffset
+      });
+      const symbolGraphic = new Graphic({
+        geometry: point,
+        symbol: pointSymbol,
+        popupTemplate: {
+          title: this.popuptitle,
+          content: this.popupinfo
+        }
+      });
+      this.esriMapView.graphics.add(symbolGraphic);
   }
 
   render() {
@@ -432,6 +362,10 @@ export class EsriMapView {
    */
   private verifyProps(): boolean {
     let isValid:boolean = false;
+    if (!this.apikey) {
+      // if apikey is provided just use it without any verification, otherwise make sure it is null.
+      this.apikey = null;
+    }
     if (this.webmap && !isValidItemID(this.webmap)) {
       // if a web map is specified but it is not an item ID then ignore it.
       // TODO: What about a service URL?
