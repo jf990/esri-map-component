@@ -27,7 +27,7 @@ export class EsriSceneView {
   private asset_path = getAssetPath("./assets/");
 
   /**
-   * esri-loader options
+   * Set your API key. See the section on [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
    */
   esriMapOptions = {
     url: `https://js.arcgis.com/${this.javascript_api_version}/`,
@@ -126,7 +126,7 @@ export class EsriSceneView {
     setDefaultOptions(this.esriMapOptions);
     loadCss(`${this.esriMapOptions.url}/esri/themes/light/main.css`);
     this.createEsriScene()
-    .then(() => {
+    .then(function() {
       // console.log("Map scene should be showing");
     })
     .catch((mapLoadingException) => {
@@ -148,7 +148,7 @@ export class EsriSceneView {
           this.showSymbol(this.symbol);
         }
       }
-    })
+    });
   }
 
   /**
@@ -185,6 +185,7 @@ export class EsriSceneView {
         .catch((loadException) => {
           mapFailed(loadException);
         });
+        mapCreated();
       } else if (isValidItemID(this.basemap)) {
         // if the basemap looks like an item ID then assume it is a custom vector map. If it is not (e.g. it's actually a webscene)
         // then this isn't going to work. use `webscene` instead!
@@ -218,6 +219,7 @@ export class EsriSceneView {
         .catch((loadException) => {
           mapFailed(loadException);
         });
+        mapCreated();
       } else {
         // basemap is expected to be one of the string enumerations in the API (https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap)
         loadModules(["esri/config", "esri/Map"])
@@ -232,6 +234,7 @@ export class EsriSceneView {
         .catch((loadException) => {
           mapFailed(loadException);
         });
+        mapCreated();
       }
     });
   }
@@ -330,7 +333,6 @@ export class EsriSceneView {
   /**
    * Create a search widget and add it to the view at the given UI position.
    * @param {string} searchWidgetPosition The UI position where to place the search widget in the view.
-   * @returns {Promise} A Promise is returned to load the Search Widget module.
    */
   private createSearchWidget(searchWidgetPosition: string) {
     return loadModules(["esri/config", "esri/widgets/Search"])
@@ -343,15 +345,14 @@ export class EsriSceneView {
         position: searchWidgetPosition,
         index: 0
       } as __esri.UIAddPosition);
-      }
-    );
+    });
   }
 
     /**
    * Show a symbol on the map at the initial viewpoint location.
    * @param {string} symbol Either an asset id of a local symbol asset or a fully qualified URL to a PNG to use as the symbol.
    */
-  private showSymbol(symbol: string) {
+  private async showSymbol(symbol: string) {
     let symbolURL: string;
     let xoffset: string;
     let yoffset: string;
@@ -365,41 +366,35 @@ export class EsriSceneView {
       xoffset = this.parsedOffset.x.toString();
       yoffset = this.parsedOffset.y.toString();
     }
-    return loadModules([
+    const [
+      esriConfig, PictureMarkerSymbol, Graphic, Point
+    ] = await loadModules([
       "esri/config",
       "esri/symbols/PictureMarkerSymbol",
       "esri/Graphic",
       "esri/geometry/Point"
-    ], this.esriMapOptions).then(
-      ([
-        esriConfig,
-        PictureMarkerSymbol,
-        Graphic,
-        Point
-      ]) => {
-        this.setAuthentication(esriConfig);
-        const point = new Point({
-          longitude: this.longitude,
-          latitude: this.latitude
-        });
-        const pointSymbol = new PictureMarkerSymbol({
-          url: symbolURL,
-          width: "64px",
-          height: "64px",
-          xoffset: xoffset,
-          yoffset: yoffset
-        });
-        const symbolGraphic = new Graphic({
-          geometry: point,
-          symbol: pointSymbol,
-          popupTemplate: {
-            title: this.popuptitle,
-            content: this.popupinfo
-          }
-        });
-        this.esriSceneView.graphics.add(symbolGraphic);
+    ], this.esriMapOptions);
+    this.setAuthentication(esriConfig);
+    const point = new Point({
+      longitude: this.longitude,
+      latitude: this.latitude
+    });
+    const pointSymbol = new PictureMarkerSymbol({
+      url: symbolURL,
+      width: "64px",
+      height: "64px",
+      xoffset: xoffset,
+      yoffset: yoffset
+    });
+    const symbolGraphic = new Graphic({
+      geometry: point,
+      symbol: pointSymbol,
+      popupTemplate: {
+        title: this.popuptitle,
+        content: this.popupinfo
       }
-    );
+    });
+    this.esriSceneView.graphics.add(symbolGraphic);
   }
 
   /**

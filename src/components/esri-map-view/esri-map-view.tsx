@@ -25,7 +25,7 @@ export class EsriMapView {
   private asset_path = getAssetPath("./assets/");
 
   /**
-   * esri-loader options
+   * Set your API key. See the section on [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
    */
   esriMapOptions = {
     url: `https://js.arcgis.com/${this.javascript_api_version}/`,
@@ -178,8 +178,9 @@ export class EsriMapView {
         .catch((loadException) => {
           mapFailed(loadException);
         });
+        mapCreated();
       } else if (isValidItemID(this.basemap)) {
-        // if the basemap looks like an item ID then assume it is a custom vector map. If it is not (e.g. it's actually a webmap)
+        // if the basemap looks like an item ID then assume it is the user's custom vector map. If it is not (e.g. it's actually a webmap)
         // then this isn't going to work. use `webmap` instead!
         loadModules([
           "esri/config",
@@ -211,6 +212,7 @@ export class EsriMapView {
         .catch((loadException) => {
           mapFailed(loadException);
         });
+        mapCreated();
       } else {
         // basemap is expected to be one of the string enumerations in the API (https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap)
         loadModules(["esri/config", "esri/Map"])
@@ -224,6 +226,7 @@ export class EsriMapView {
         .catch((loadException) => {
           mapFailed(loadException);
         });
+        mapCreated();
       }
     });
   }
