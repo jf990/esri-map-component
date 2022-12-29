@@ -7,6 +7,9 @@
 There are two components in this library: `esri-map-view` and `esri-scene-view`. They mostly work the
 same: `esri-map-view` displays a map in a 2D map view and `esri-scene-view` displays a 3D globe in
 a scene view.
+
+![Example esri map view and scene view on an html page](./esri-map-view-screenshot.png "Example esri map view and scene view on an html page")
+
 These components are built with the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/) and [Stencil](https://github.com/ionic-team/stencil-component-starter) starter project for building standalone web components.
 
 ## Esri Map View
