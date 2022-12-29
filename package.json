@@ -1,6 +1,6 @@
 {
   "name": "esri-map-view",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Display an Esri map view as a web component.",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.js",
@@ -11,8 +11,8 @@
   "collection:main": "./dist/collection/index.js",
   "unpkg": "./dist/esri-map-view/esri-map-view.js",
   "files": [
-    "./dist/",
-    "./loader/"
+    "dist/",
+    "loader/"
   ],
   "scripts": {
     "build": "stencil build --docs",
