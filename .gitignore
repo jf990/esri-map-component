@@ -2,6 +2,7 @@ dist/
 www/
 loader/
 
+secret.js
 *~
 *.sw[mnpcod]
 *.log
