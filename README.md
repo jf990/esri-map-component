@@ -91,7 +91,7 @@ For more information about using ArcGIS maps, scenes, and layers visit https://d
 
 ## Usage
 
-There are several wasy to incldue the custom component library in your web project.
+There are several ways to include the custom component library in your web project.
 
 ### Script tag
 
@@ -100,7 +100,7 @@ There are several wasy to incldue the custom component library in your web proje
 - Include a script tag on your page
 
 ```html
-<script src='https://unpkg.com/esri-map-view@0.4.1/dist/esri-map-view.js'></script>
+<script src='https://unpkg.com/esri-map-view@0.5.1/dist/esri-map-view.js'></script>
 ```
 
 Then you can use the element anywhere in your HTML, template, JSX, etc.
