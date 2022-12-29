@@ -10,19 +10,20 @@ Using the custom component with [webpack](https://webpack.js.org/) is a little t
 2. Add packages
    - `npm install webpack --save-dev`
    - `npm install webpack-cli --save-dev`
+   - `npm install esri-map-view --save`
 
 ## Update an existing project
 
 1. Add the custom component
    - `npm install esri-map-view --save`
 
-2. Update web-pack-config.js
+2. Update webpack.config.js
 
    ```javascript
     "plugins": [
       new stencil.StencilPlugin({
         collections: [
-          'node-modules/esri-map-view/dist/esri-map-view'
+          'node_modules/esri-map-view/dist/esri-map-view'
         ]
       })
     ]
@@ -36,7 +37,7 @@ Using the custom component with [webpack](https://webpack.js.org/) is a little t
    defineCustomElements(window);
    ```
 
-4. Create or update the webpage
+4. Create or update the webpage and update the esri map component with your attributes.
    - See `src/index.html`
 
 5. Build the bundle. This updates the `./dist` folder with the site build.

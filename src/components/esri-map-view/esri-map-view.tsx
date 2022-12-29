@@ -2,20 +2,7 @@
  * <esri-map-view> a custom web component for rendering a 2D map on a web page.
  */
 import { Component, h, Prop, Element, getAssetPath } from "@stencil/core";
-import esriConfig from "@arcgis/core/config.js";
-import Map from '@arcgis/core/Map';
-import MapView from '@arcgis/core/views/MapView';
-import Basemap from '@arcgis/core/Basemap';
-import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
-import Layer from "@arcgis/core/layers/Layer";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import PortalItem from "@arcgis/core/portal/PortalItem";
-import WebMap from '@arcgis/core/WebMap';
-import TextSymbol from "@arcgis/core/symbols/TextSymbol";
-import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
-import Graphic from "@arcgis/core/Graphic";
-import Point from "@arcgis/core/geometry/Point";
-import SearchWidget from "@arcgis/core/Widgets/Search";
+import { setDefaultOptions, loadCss, loadModules } from "esri-loader";
 import {
   parseViewpoint,
   viewpointProps,
@@ -34,19 +21,28 @@ import {
 export class EsriMapView {
   @Element() hostElement: HTMLElement;
 
+  private javascript_api_version: string = "4.25";
   private asset_path = getAssetPath("./assets/");
 
   /**
    * Set your API key. See the section on [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
    */
+  esriMapOptions = {
+    url: `https://js.arcgis.com/${this.javascript_api_version}/`,
+    css: true
+  };
+
+  /**
+   * Set your API key. Learn more about [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
+   */
   @Prop() apikey: string = "YOUR_API_KEY";
 
   /**
-   * Indicate a basemap id to use for the map. This property will be overridden by
-   * `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then
+   * Indicate a basemap id to use for the map. Select one of the basemap style options from the enumeration https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap,
+   * or the item ID of a custom basemap style. This property will be ignored by `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then
    * a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
    */
-  @Prop() basemap: string = "osm";
+  @Prop() basemap: string = "osm-streets";
 
   /**
    * Indicate a web map id to use for the map. If neither `webmap` nor `basemap`
@@ -116,18 +112,15 @@ export class EsriMapView {
 
   constructor() {
     this.verifyProps();
-    if (this.apikey) {
-      esriConfig.apiKey = this.apikey;
-    } else {
-      esriConfig.request.useIdentity = true;
-    }
+    setDefaultOptions(this.esriMapOptions);
+    loadCss(`${this.esriMapOptions.url}/esri/css/main.css`);
     this.createEsriMap()
     .then(() => {
       // console.log("Map should be showing");
     })
     .catch((mapLoadingException) => {
       console.log(`Map loading failed ${mapLoadingException.toString()}`);
-    })
+    });
   }
 
   componentDidUpdate() {
@@ -152,79 +145,121 @@ export class EsriMapView {
   }
 
   /**
+   * Set the configuration object authentication based on the user provided settings.
+   * @param esriConfig The esri configuration object https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html
+   */
+  private setAuthentication(esriConfig) {
+    if (this.apikey) {
+      esriConfig.apiKey = this.apikey;
+    } else {
+      esriConfig.request.useIdentity = true;
+    }
+  }
+
+  /**
    * Create a map object. Review the element attributes to determine which type of map should be created.
    * Given the attributes set on the element, creates either a standard basemap, a custom vector basemap,
    * or a web map.
    */
-  private createEsriMap() {
-    const esriMapComponent = this;
-    return new Promise((mapCreated) => {
-      if (isValidItemID(esriMapComponent.webmap)) {
-        // If web map provided, assume a valid item ID and try to create a WebMap from it.
-        esriMapComponent.esriWebMap = new WebMap({
-          portalItem: {
-            id: esriMapComponent.webmap
-          }
+  private async createEsriMap() {
+    return new Promise<void>((mapCreated, mapFailed) => {
+      if (isValidItemID(this.webmap)) {
+        // If webmap provided, assume a valid item ID and try to create a WebMap from it.
+        loadModules(["esri/config", "esri/WebMap"])
+        .then(([esriConfig, WebMap]) => {
+          this.setAuthentication(esriConfig);
+          this.esriWebMap = new WebMap({
+            portalItem: {
+              id: this.webmap
+            }
+          });
+          mapCreated();
+        })
+        .catch((loadException) => {
+          mapFailed(loadException);
         });
-        mapCreated(1);
-      } else if (isValidItemID(esriMapComponent.basemap)) {
+        mapCreated();
+      } else if (isValidItemID(this.basemap)) {
         // if the basemap looks like an item ID then assume it is the user's custom vector map. If it is not (e.g. it's actually a webmap)
         // then this isn't going to work. use `webmap` instead!
-        const customBasemap = new Basemap({
-          baseLayers: [
-            new VectorTileLayer({
-              portalItem: {
-                id: esriMapComponent.basemap
-              }
-            })
-          ]
+        loadModules([
+          "esri/config",
+          "esri/Map",
+          "esri/Basemap",
+          "esri/layers/VectorTileLayer"
+        ])
+        .then(([
+          esriConfig,
+          Map,
+          Basemap,
+          VectorTileLayer
+        ]) => {
+          this.setAuthentication(esriConfig);
+          const customBasemap = new Basemap({
+            baseLayers: [
+              new VectorTileLayer({
+                portalItem: {
+                  id: this.basemap
+                }
+              })
+            ]
+          })
+          this.esriMap = new Map({
+            basemap: customBasemap
+          });
+          mapCreated();
         })
-        esriMapComponent.esriMap = new Map({
-          basemap: customBasemap
+        .catch((loadException) => {
+          mapFailed(loadException);
         });
-        mapCreated(1);
+        mapCreated();
       } else {
         // basemap is expected to be one of the string enumerations in the API (https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap)
-        esriMapComponent.esriMap = new Map({
-          basemap: Basemap.fromId(esriMapComponent.basemap)
+        loadModules(["esri/config", "esri/Map"])
+        .then(([esriConfig, Map]) => {
+          this.setAuthentication(esriConfig);
+          this.esriMap = new Map({
+            basemap: this.basemap
+          });
+          mapCreated();
+        })
+        .catch((loadException) => {
+          mapFailed(loadException);
         });
-        mapCreated(1);
+        mapCreated();
       }
     });
   }
 
   /**
-   * Creates the mapview used in the component. Assumes the map was created before getting here.
+   * Creates the map view used in the component. Assumes the map was created before getting here.
    */
-  private createEsriMapView() {
-    const esriMapComponent = this;
-    return new Promise(function(resolve) {
-      const mapDiv = esriMapComponent.hostElement.querySelector("div");
-
-      if (esriMapComponent.webmap && !esriMapComponent.parsedViewpoint) {
-        // A web map and no initial viewpoint specified will use the viewpoint set in the web map.
-        esriMapComponent.esriMapView = new MapView({
-          container: mapDiv,
-          map: esriMapComponent.esriWebMap
-        });
-      } else {
-        esriMapComponent.esriMapView = new MapView({
-          container: mapDiv,
-          zoom: esriMapComponent.levelOfDetail,
-          center: [esriMapComponent.longitude, esriMapComponent.latitude],
-          map: esriMapComponent.esriMap || esriMapComponent.esriWebMap
-        });
+  private async createEsriMapView() {
+    const [esriConfig, MapView] = await loadModules(["esri/config", "esri/views/MapView"]);
+    const mapDiv = this.hostElement.querySelector("div");
+    this.setAuthentication(esriConfig);
+    if (this.webmap && !this.parsedViewpoint) {
+      // A web map and no initial viewpoint specified will use the viewpoint set in the web map.
+      this.esriMapView = new MapView({
+        container: mapDiv,
+        map: this.esriWebMap
+      });
+    } else {
+      this.esriMapView = new MapView({
+        container: mapDiv,
+        zoom: this.levelOfDetail,
+        center: [this.longitude, this.latitude],
+        map: this.esriMap || this.esriWebMap
+      });
+    }
+    if (this.esriMapView) {
+      if (this.layers) {
+        this.addLayers(this.layers);
       }
-      if (esriMapComponent.esriMapView) {
-        if (esriMapComponent.layers) {
-          esriMapComponent.addLayers(esriMapComponent.layers);
-        }
-        if (isValidSearchPosition(esriMapComponent.search)) {
-          esriMapComponent.createSearchWidget(esriMapComponent.search);
-        }
+      if (isValidSearchPosition(this.search)) {
+        this.createSearchWidget(this.search);
       }
-      resolve(1);
-    });
+    }
   }
 
   /**
@@ -243,22 +278,30 @@ export class EsriMapView {
     }
     // Only proceed with layer construction if we have layers we think we can load.
     if (layersList.length > 0) {
-      layersList.forEach((layerId:string) => {
-        if (isValidItemID(layerId)) {
-          const portalItem = new PortalItem({
-            id: layerId
-          });
-          Layer.fromPortalItem({portalItem: portalItem}).then(itemLayer => {
-            this.esriMap.add(itemLayer);
-          });
-        } else if (isValidURL(layerId)) {
-          const featureLayer = new FeatureLayer({
-            url: layerId
-          });
-          if (featureLayer) {
-            this.esriMap.add(featureLayer);
+      loadModules(["esri/config", "esri/layers/FeatureLayer", "esri/layers/Layer", "esri/portal/PortalItem"])
+      .then(([esriConfig, FeatureLayer, Layer, PortalItem]) => {
+        this.setAuthentication(esriConfig);
+        layersList.forEach((layerId:string) => {
+          if (isValidItemID(layerId)) {
+            const portalItem = new PortalItem({
+              id: layerId
+            });
+            Layer.fromPortalItem({portalItem: portalItem})
+            .then((itemLayer: __esri.Layer) => {
+              this.esriMap.layers.add(itemLayer);
+            })
+            .catch((exception) => {
+              console.log(`Layer ${layerId} loading failed ${exception.toString()}`);
+            });
+          } else if (isValidURL(layerId)) {
+            const featureLayer = new FeatureLayer({
+              url: layerId
+            });
+            if (featureLayer) {
+              this.esriMap.layers.add(featureLayer);
+            }
           }
-        }
+        });
       });
     }
   }
@@ -267,25 +310,26 @@ export class EsriMapView {
    * Create a search widget and add it to the view at the given UI position.
    * @param {string} searchWidgetPosition The UI position where to place the search widget in the view.
    */
-  private createSearchWidget(searchWidgetPosition: string) {
-      const searchWidget = new SearchWidget({
-        view: this.esriMapView
-      });
-
-      this.esriMapView.ui.add(searchWidget, {
-        position: searchWidgetPosition,
-        index: 0
-      } as __esri.UIAddPosition);
+  private async createSearchWidget(searchWidgetPosition: string) {
+    const [esriConfig, SearchWidget] = await loadModules(["esri/config", "esri/widgets/Search"]);
+    this.setAuthentication(esriConfig);
+    const searchWidget = new SearchWidget({
+      view: this.esriMapView
+    });
+    this.esriMapView.ui.add(searchWidget, {
+      position: searchWidgetPosition,
+      index: 0
+    } as __esri.UIAddPosition);
   }
 
   /**
    * Show a symbol on the map at the initial viewpoint location.
    * @param {string} symbol Either an asset id of a local symbol asset or a fully qualified URL to a PNG to use as the symbol.
    */
-  private showSymbol(symbol: string) {
-    let symbolURL;
-    let xoffset;
-    let yoffset;
+  private async showSymbol(symbol: string) {
+    let symbolURL: string;
+    let xoffset: string;
+    let yoffset: string;
     if (symbol == "green-pin") {
       symbolURL = this.asset_path + "green-pin.png";
       xoffset = "0";
@@ -296,6 +340,15 @@ export class EsriMapView {
       xoffset = this.parsedOffset.x.toString();
       yoffset = this.parsedOffset.y.toString();
     }
+    const [
+      esriConfig, PictureMarkerSymbol, Graphic, Point
+    ] = await loadModules([
+      "esri/config",
+      "esri/symbols/PictureMarkerSymbol",
+      "esri/Graphic",
+      "esri/geometry/Point"
+    ]);
+    this.setAuthentication(esriConfig);
     const point = new Point({
       longitude: this.longitude,
       latitude: this.latitude
@@ -322,34 +375,43 @@ export class EsriMapView {
    * Show a pin on the map at the initial viewpoint location.
    * @param {string} pinColor The color value of the pin symbol.
    */
-  private showPin(pinColor: string) {
-      let xoffset = this.parsedOffset.x;
-      let yoffset = this.parsedOffset.y;
-      const point = new Point({
-        longitude: this.longitude,
-        latitude: this.latitude
-      });
-      const pointSymbol = new TextSymbol({
-        color: pinColor,
-        haloColor: "black",
-        haloSize: "1px",
-        text: "\ue61d", // esri-icon-map-pin
-        font: {
-          size: 30,
-          family: "CalciteWebCoreIcons"
-        },
-        xoffset: xoffset,
-        yoffset: yoffset
-      });
-      const symbolGraphic = new Graphic({
-        geometry: point,
-        symbol: pointSymbol,
-        popupTemplate: {
-          title: this.popuptitle,
-          content: this.popupinfo
-        }
-      });
-      this.esriMapView.graphics.add(symbolGraphic);
+  private async showPin(pinColor: string) {
+    const [
+      esriConfig, TextSymbol, Graphic, Point
+    ] = await loadModules([
+      "esri/config",
+      "esri/symbols/TextSymbol",
+      "esri/Graphic",
+      "esri/geometry/Point"
+    ], this.esriMapOptions);
+    this.setAuthentication(esriConfig);
+    let xoffset = this.parsedOffset.x;
+    let yoffset = this.parsedOffset.y;
+    const point = new Point({
+      longitude: this.longitude,
+      latitude: this.latitude
+    });
+    const pointSymbol = new TextSymbol({
+      color: pinColor,
+      haloColor: "black",
+      haloSize: "1px",
+      text: "\ue61d",
+      font: {
+        size: 30,
+        family: "CalciteWebCoreIcons"
+      },
+      xoffset: xoffset,
+      yoffset: yoffset
+    });
+    const symbolGraphic = new Graphic({
+      geometry: point,
+      symbol: pointSymbol,
+      popupTemplate: {
+        title: this.popuptitle,
+        content: this.popupinfo
+      }
+    });
+    this.esriMapView.graphics.add(symbolGraphic);
   }
 
   render() {
@@ -361,19 +423,15 @@ export class EsriMapView {
    * we are in a valid starting state we can render.
    */
   private verifyProps(): boolean {
-    let isValid:boolean = false;
-    if (!this.apikey) {
-      // if apikey is provided just use it without any verification, otherwise make sure it is null.
-      this.apikey = null;
-    }
+    let isValid:boolean = true;
     if (this.webmap && !isValidItemID(this.webmap)) {
       // if a web map is specified but it is not an item ID then ignore it.
-      // TODO: What about a service URL?
+      // @todo: What about a service URL?
       this.webmap = null;
     }
     if (!this.basemap && !this.webmap) {
       // If there is no basemap and no web map then use a default basemap, no point to rendering nothing.
-      this.basemap = "osm";
+      this.basemap = "osm-streets";
     }
     if (!this.viewpoint && !this.webmap) {
       // if no initial viewpoint is specified then set some default
@@ -392,7 +450,6 @@ export class EsriMapView {
       // if given a search widget and it's not a valid UI position then ignore it.
       this.search = null;
     }
-    isValid = true;
     return isValid;
   }
 }

@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
-  <title>Esri map view component pure HTML demo</title>
-
+  <title>Esri map view component JavaScript bundler demo</title>
   <style>
     html, body {
       height: 100%;
@@ -12,13 +11,11 @@
       padding: 0;
       margin: 0;
     }
-
     .map-row {
       display: block;
       width: 100%;
       height: 100%;
     }
-
     .column-left {
       display: block;
       float: left;
@@ -27,7 +24,6 @@
       padding: 0;
       margin: 0;
     }
-
     .column-right {
       display: block;
       float: right;
@@ -40,11 +36,12 @@
   <script src="main.js"></script>
 </head>
 <body>
-
   <div id="mapviews" class="map-row">
     <div class="column-left">
       <esri-map-view
-        basemap="osm"
+        id="mapview"
+        apikey="YOUR_API_KEY"
+        basemap="osm-streets"
         viewpoint="13.3761697,52.5166449,15"
         layers="d3e5c29f5e404aa4b2de29a9f0e37996"
         search="top-right"
@@ -56,8 +53,9 @@
     </div>
     <div class="column-right">
       <esri-scene-view
-        name="dodo"
-        basemap="satellite"
+        id="sceneview"
+        apikey="YOUR_API_KEY"
+        basemap="arcgis-oceans"
         layers="d3e5c29f5e404aa4b2de29a9f0e37996"
         search="top-right"
         symbol="pin:red"

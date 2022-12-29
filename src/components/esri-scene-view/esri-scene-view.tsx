@@ -2,20 +2,7 @@
  * <esri-scene-view> a custom web component for rendering a 3D map on a web page.
  */
 import { Component, h, Prop, Element, getAssetPath } from "@stencil/core";
-import esriConfig from "@arcgis/core/config.js";
-import Map from '@arcgis/core/Map';
-import SceneView from '@arcgis/core/views/SceneView';
-import Basemap from '@arcgis/core/Basemap';
-import VectorTileLayer from '@arcgis/core/layers/VectorTileLayer';
-import Layer from "@arcgis/core/layers/Layer";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import PortalItem from "@arcgis/core/portal/PortalItem";
-import WebScene from '@arcgis/core/WebScene';
-import TextSymbol from "@arcgis/core/symbols/TextSymbol";
-import PictureMarkerSymbol from "@arcgis/core/symbols/PictureMarkerSymbol";
-import Graphic from "@arcgis/core/Graphic";
-import Point from "@arcgis/core/geometry/Point";
-import SearchWidget from "@arcgis/core/Widgets/Search";
+import { setDefaultOptions, loadCss, loadModules } from "esri-loader";
 import {
   parseViewpoint,
   viewpointProps,
@@ -36,19 +23,28 @@ import {
 export class EsriSceneView {
   @Element() hostElement: HTMLElement;
 
+  private javascript_api_version: string = "4.25";
   private asset_path = getAssetPath("./assets/");
 
   /**
    * Set your API key. See the section on [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
    */
-   @Prop() apikey: string = "YOUR_API_KEY";
+  esriMapOptions = {
+    url: `https://js.arcgis.com/${this.javascript_api_version}/`,
+    css: true
+  };
 
-   /**
+  /**
+   * Set your API key. Learn more about [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
+   */
+  @Prop() apikey: string = "YOUR_API_KEY";
+
+  /**
    * Indicate a basemap id to use for the map. This property will be overridden by
    * `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then
    * a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
    */
-  @Prop() basemap: string = "osm";
+  @Prop() basemap: string = "arcgis-imagery-standard";
 
   /**
    * Indicate a web scene id to use for the map. If neither `webscene` nor `basemap`
@@ -127,18 +123,15 @@ export class EsriSceneView {
 
   constructor() {
     this.verifyProps();
-    if (this.apikey) {
-      esriConfig.apiKey = this.apikey;
-    } else {
-      esriConfig.request.useIdentity = true;
-    }
+    setDefaultOptions(this.esriMapOptions);
+    loadCss(`${this.esriMapOptions.url}/esri/themes/light/main.css`);
     this.createEsriScene()
     .then(function() {
       // console.log("Map scene should be showing");
     })
     .catch((mapLoadingException) => {
       console.log(`Map loading failed ${mapLoadingException.toString()}`);
-    })
+    });
   }
 
   /**
@@ -146,54 +139,100 @@ export class EsriSceneView {
    * Only called once per component life cycle.
    */
   componentDidLoad() {
-    this.createEsriSceneView();
-    if (this.symbol) {
-      if (this.symbol.indexOf("pin:") === 0) {
-        this.showPin(this.symbol.substring(4));
-      } else {
-        this.showSymbol(this.symbol);
+    this.createEsriSceneView()
+    .then(() => {
+      if (this.symbol) {
+        if (this.symbol.indexOf("pin:") === 0) {
+          this.showPin(this.symbol.substring(4));
+        } else {
+          this.showSymbol(this.symbol);
+        }
       }
-    }
+    });
   }
 
+  /**
+   * Set the configuration object authentication based on the user provided settings.
+   * @param esriConfig The esri configuration object https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html
+   */
+  private setAuthentication(esriConfig) {
+    if (this.apikey) {
+      esriConfig.apiKey = this.apikey;
+    } else {
+      esriConfig.request.useIdentity = true;
+    }
+  }
 
   /**
    * Create a map object. Review the element attributes to determine which type of map should be created.
    * Given the attributes set on the element, creates either a standard basemap, a custom vector basemap,
    * or a web scene.
    */
-  private createEsriScene() {
-    const esriSceneComponent = this;
-    return new Promise<void>(function(mapCreated) {
-      if (isValidItemID(esriSceneComponent.webscene)) {
+  private async createEsriScene() {
+    return new Promise<void>((mapCreated, mapFailed) => {
+      if (isValidItemID(this.webscene)) {
         // If webscene provided, assume a valid item ID and try to create a WebScene from it.
-        esriSceneComponent.esriWebScene = new WebScene({
-          portalItem: {
-            id: esriSceneComponent.webscene
-          }
+        loadModules(["esri/config", "esri/WebScene"])
+        .then(([esriConfig, WebScene]) => {
+          this.setAuthentication(esriConfig);
+          this.esriWebScene = new WebScene({
+            portalItem: {
+              id: this.webscene
+            }
+          });
+          mapCreated();
+        })
+        .catch((loadException) => {
+          mapFailed(loadException);
         });
         mapCreated();
-      } else if (isValidItemID(esriSceneComponent.basemap)) {
+      } else if (isValidItemID(this.basemap)) {
         // if the basemap looks like an item ID then assume it is a custom vector map. If it is not (e.g. it's actually a webscene)
         // then this isn't going to work. use `webscene` instead!
-        const customBasemap = new Basemap({
-          baseLayers: [
-            new VectorTileLayer({
-              portalItem: {
-                id: esriSceneComponent.basemap
-              }
-            })
-          ]
+        loadModules([
+          "esri/config",
+          "esri/Map",
+          "esri/Basemap",
+          "esri/layers/VectorTileLayer"
+        ])
+        .then(([
+          esriConfig,
+          Map,
+          Basemap,
+          VectorTileLayer
+        ]) => {
+          this.setAuthentication(esriConfig);
+          const customBasemap = new Basemap({
+            baseLayers: [
+              new VectorTileLayer({
+                portalItem: {
+                  id: this.basemap
+                }
+              })
+            ]
+          })
+          this.esriMap = new Map({
+            basemap: customBasemap
+          });
+          mapCreated();
         })
-        esriSceneComponent.esriMap = new Map({
-          basemap: customBasemap
+        .catch((loadException) => {
+          mapFailed(loadException);
         });
         mapCreated();
       } else {
         // basemap is expected to be one of the string enumerations in the API (https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap)
-        esriSceneComponent.esriMap = new Map({
-          basemap: esriSceneComponent.basemap,
-          ground: "world-elevation"
+        loadModules(["esri/config", "esri/Map"])
+        .then(([esriConfig, Map]) => {
+          this.setAuthentication(esriConfig);
+          this.esriMap = new Map({
+            basemap: this.basemap,
+            ground: "world-elevation"
+          });
+          mapCreated();
+        })
+        .catch((loadException) => {
+          mapFailed(loadException);
         });
         mapCreated();
       }
@@ -203,9 +242,10 @@ export class EsriSceneView {
   /**
    * Creates the SceneView used in the component. Assumes the map was created before getting here.
    */
-  private createEsriSceneView() {
+  private async createEsriSceneView() {
+    const [esriConfig, SceneView] = await loadModules(["esri/config", "esri/views/SceneView"]);
     const mapDiv = this.hostElement.querySelector("div");
-
+    this.setAuthentication(esriConfig);
     if (this.webscene && !this.cameraSettings && !this.parsedViewpoint) {
       // A web scene and no initial viewpoint specified will use the viewpoint set in the web scene.
       this.esriSceneView = new SceneView({
@@ -262,22 +302,30 @@ export class EsriSceneView {
     }
     // Only proceed with layer construction if we have layers we think we can load.
     if (layersList.length > 0) {
-      layersList.forEach((layerId:string) => {
-        if (isValidItemID(layerId)) {
-          const portalItem = new PortalItem({
-            id: layerId
-          });
-          Layer.fromPortalItem({portalItem: portalItem}).then(itemLayer => {
-            this.esriMap.add(itemLayer);
-          });
-        } else if (isValidURL(layerId)) {
-          const featureLayer = new FeatureLayer({
-            url: layerId
-          });
-          if (featureLayer) {
-            this.esriMap.add(featureLayer);
+      loadModules(["esri/config", "esri/layers/FeatureLayer", "esri/layers/Layer", "esri/portal/PortalItem"])
+      .then(([esriConfig, FeatureLayer, Layer, PortalItem]) => {
+        this.setAuthentication(esriConfig);
+        layersList.forEach((layerId:string) => {
+          if (isValidItemID(layerId)) {
+            const portalItem = new PortalItem({
+              id: layerId
+            });
+            Layer.fromPortalItem({portalItem: portalItem})
+            .then((itemLayer: __esri.Layer) => {
+              this.esriMap.layers.add(itemLayer);
+            })
+            .catch((exception) => {
+              console.log(`Layer ${layerId} loading failed ${exception.toString()}`);
+            });
+          } else if (isValidURL(layerId)) {
+            const featureLayer = new FeatureLayer({
+              url: layerId
+            });
+            if (featureLayer) {
+              this.esriMap.layers.add(featureLayer);
+            }
           }
-        }
+        });
       });
     }
   }
@@ -287,24 +335,27 @@ export class EsriSceneView {
    * @param {string} searchWidgetPosition The UI position where to place the search widget in the view.
    */
   private createSearchWidget(searchWidgetPosition: string) {
-    const searchWidget = new SearchWidget({
-      view: this.esriSceneView
+    return loadModules(["esri/config", "esri/widgets/Search"])
+    .then(([esriConfig, SearchWidget]) => {
+      this.setAuthentication(esriConfig);
+      const searchWidget = new SearchWidget({
+        view: this.esriSceneView
+      });
+      this.esriSceneView.ui.add(searchWidget, {
+        position: searchWidgetPosition,
+        index: 0
+      } as __esri.UIAddPosition);
     });
-
-    this.esriSceneView.ui.add(searchWidget, {
-      position: searchWidgetPosition,
-      index: 0
-    } as __esri.UIAddPosition);
   }
 
     /**
    * Show a symbol on the map at the initial viewpoint location.
    * @param {string} symbol Either an asset id of a local symbol asset or a fully qualified URL to a PNG to use as the symbol.
    */
-  private showSymbol(symbol: string) {
-    let symbolURL;
-    let xoffset;
-    let yoffset;
+  private async showSymbol(symbol: string) {
+    let symbolURL: string;
+    let xoffset: string;
+    let yoffset: string;
     if (symbol == "green-pin") {
       symbolURL = this.asset_path + "green-pin.png";
       xoffset = "0";
@@ -315,6 +366,15 @@ export class EsriSceneView {
       xoffset = this.parsedOffset.x.toString();
       yoffset = this.parsedOffset.y.toString();
     }
+    const [
+      esriConfig, PictureMarkerSymbol, Graphic, Point
+    ] = await loadModules([
+      "esri/config",
+      "esri/symbols/PictureMarkerSymbol",
+      "esri/Graphic",
+      "esri/geometry/Point"
+    ], this.esriMapOptions);
+    this.setAuthentication(esriConfig);
     const point = new Point({
       longitude: this.longitude,
       latitude: this.latitude
@@ -341,7 +401,16 @@ export class EsriSceneView {
    * Show a pin on the map at the initial viewpoint location.
    * @param {string} pinColor The color value of the pin symbol.
    */
-  private showPin(pinColor: string) {
+  private async showPin(pinColor: string) {
+    const [
+      esriConfig, TextSymbol, Graphic, Point
+    ] = await loadModules([
+      "esri/config",
+      "esri/symbols/TextSymbol",
+      "esri/Graphic",
+      "esri/geometry/Point"
+    ]);
+    this.setAuthentication(esriConfig);
     let xoffset = this.parsedOffset.x;
     let yoffset = this.parsedOffset.y;
     const point = new Point({
@@ -352,7 +421,7 @@ export class EsriSceneView {
       color: pinColor,
       haloColor: "black",
       haloSize: "1px",
-      text: "\ue61d", // esri-icon-map-pin
+      text: "\ue61d",
       font: {
         size: 30,
         family: "CalciteWebCoreIcons"
@@ -380,19 +449,15 @@ export class EsriSceneView {
    * we are in a valid starting state we can render.
    */
   private verifyProps(): boolean {
-    let isValid:boolean = false;
-    if (!this.apikey) {
-      // if apikey is provided just use it without any verification, otherwise make sure it is null.
-      this.apikey = null;
-    }
+    let isValid:boolean = true;
     if (this.webscene && !isValidItemID(this.webscene)) {
       // if a web scene is specified but it is not an item ID then ignore it.
-      // TODO: What about a service URL?
+      // @todo: What about a service URL?
       this.webscene = null;
     }
     if (!this.basemap && !this.webscene) {
       // If there is no basemap and no web scene then use a default basemap, no point to rendering nothing.
-      this.basemap = "osm";
+      this.basemap = "arcgis-imagery-standard";
     }
     if (this.cameraPosition) {
       this.cameraSettings = parseCameraPosition(this.cameraPosition);
@@ -415,7 +480,6 @@ export class EsriSceneView {
       // if given a search widget and it's not a valid UI position then ignore it.
       this.search = null;
     }
-    isValid = true;
     return isValid;
   }
 }

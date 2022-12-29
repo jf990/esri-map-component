@@ -1,6 +1,6 @@
 {
   "name": "esri-map-view",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "Display an Esri map view as a web component.",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.js",
@@ -19,20 +19,21 @@
     "publish": "npm publish --access public",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
-    "test.watch": "stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate"
+    "test.watch": "stencil test --spec --e2e --watchAll"
   },
   "dependencies": {
-    "@arcgis/core": "^4.24.7"
+    "@arcgis/core": "^4.25.5",
+    "esri-loader": "^3.7.0"
   },
   "devDependencies": {
-    "@stencil/core": "^2.17.4",
+    "@stencil/core": "^2.20.0",
+    "@types/arcgis-js-api": "^4.25.0",
     "@types/jest": "27.0.3",
-    "@types/node": "^18.7.13",
-    "@types/puppeteer": "5.4.6",
+    "@types/node": "^18.11.18",
+    "@types/puppeteer": "7.0.4",
     "jest": "27.0.3",
     "jest-cli": "27.4.5",
-    "puppeteer": "16.2.0"
+    "puppeteer": "19.4.1"
   },
   "license": "MIT",
   "repository": {
