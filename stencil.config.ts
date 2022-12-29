@@ -2,10 +2,10 @@ import { Config } from '@stencil/core';
 
 export const config: Config = {
   namespace: 'esri-map-view',
+  srcDir: './src',
   outputTargets: [
     {
-      type: 'dist',
-      esmLoaderPath: '../loader'
+      type: 'dist'
     },
     {
       type: 'docs-readme'
