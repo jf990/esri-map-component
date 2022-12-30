@@ -103,7 +103,7 @@ There are several ways to include the custom component library in your web proje
 - Include a script tag on your page
 
 ```html
-<script src='https://unpkg.com/esri-map-view@0.5.1/dist/esri-map-view.js'></script>
+<script src='https://unpkg.com/esri-map-view@0.5.3/dist/esri-map-view.js'></script>
 ```
 
 Then you can use the element anywhere in your HTML, template, JSX, etc.
