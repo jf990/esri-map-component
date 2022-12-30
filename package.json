@@ -16,10 +16,11 @@
   ],
   "scripts": {
     "build": "stencil build --docs",
-    "publish": "npm publish",
+    "publish": "npm run build && npm publish",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
-    "test.watch": "stencil test --spec --e2e --watchAll"
+    "test.watch": "stencil test --spec --e2e --watchAll",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@arcgis/core": "^4.25.5",
@@ -33,7 +34,8 @@
     "@types/puppeteer": "7.0.4",
     "jest": "27.0.3",
     "jest-cli": "27.4.5",
-    "puppeteer": "19.4.1"
+    "puppeteer": "19.4.1",
+    "husky": "^8.0.0"
   },
   "license": "MIT",
   "repository": {
