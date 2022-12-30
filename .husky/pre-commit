@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Find any ArcGIS API keys in commit
+# Adapted from https://github.com/sciencehistory/scihist_digicoll
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Check changed files for an AWS keys
+FILES=$(git diff --cached --name-only $against)
+
+# Quoted keys are optional
+QUOTE_RE="(\"|')"
+OPT_QUOTE_RE="${QUOTE_RE}?"
+ARCGIS_API_KEY_RE="${OPT_QUOTE_RE}AAPK[A-Za-z0-9\.\+=_-]{40,120}${OPT_QUOTE_RE}"
+
+if [ -n "$FILES" ]; then
+    set +e
+    KEY=$(grep -E --with-filename --line-number --no-messages $ARCGIS_API_KEY_RE $FILES)
+    set -e
+    if [ -n "$KEY" ]; then
+        exec < /dev/tty # Capture input
+        echo "=== Possible ArcGIS API keys ==="
+        echo "${KEY}"
+        echo ""
+
+        while true; do
+            read -p "Possible ArcGIS API keys found. Commit files anyway? (y/N) " yn
+            if [ "$yn" = "" ]; then
+                yn='N'
+            fi
+            case $yn in
+                [Yy] ) exit 0;;
+                [Nn] ) exit 1;;
+                * ) echo "Please answer y or n for yes or no.";;
+            esac
+        done
+        exec <&- # Release input
+    fi
+fi
+
+# Normal exit
+exit 0
