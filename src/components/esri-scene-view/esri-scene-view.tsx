@@ -23,7 +23,7 @@ import {
 export class EsriSceneView {
   @Element() hostElement: HTMLElement;
 
-  private javascript_api_version: string = "4.25";
+  private javascript_api_version: string = "4.26";
   private asset_path = getAssetPath("./assets/");
 
   /**
