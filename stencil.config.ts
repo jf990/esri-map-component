@@ -17,6 +17,9 @@ export const config: Config = {
           src: "secret.js",
           dest: "build/secret.js",
           warn: true
+        },
+        {
+          src: "index-1.html"
         }
       ],
       serviceWorker: null // disable service workers

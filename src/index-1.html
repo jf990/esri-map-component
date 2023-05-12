@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Esri map view component</title>
+  <script type="module" src="/build/esri-map-view.esm.js"></script>
+  <script nomodule src="/build/esri-map-view.js"></script>
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      margin: 2rem;
+      width: 95%;
+    }
+    .column-left {
+      width: 40%;
+      height: 100%;
+      padding-right: 1rem;
+    }
+    .column-right {
+      width: 60%;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="column-left">
+      <h1>Welcome to map components</h1>
+      <p>Maps are the primary tools by which spatial relationships and geographic data are visualized. Maps therefore become important documents.</p>
+      <p>There are several key elements that should be included each time a map is created in order to aid the viewer in understanding the communications of that map and to document the source of the geographic information used.</p>
+      <h3>What are the parts of a map?</h3>
+      <p>Numbered below are descriptions of cartographic elements that are commonly found on a map layout. Some maps have all eight elements while other maps may only contain a few of them.</p>
+    </div>
+    <div class="column-right">
+      <esri-map-view
+        id="mapview"
+        apikey="YOUR_API_KEY"
+        basemap="osm-streets"
+        viewpoint="13.3761697,52.5166449,15"
+        layers="d3e5c29f5e404aa4b2de29a9f0e37996"
+        search="top-right"
+        symbol="pin:red"
+        symboloffset="24,12"
+        popuptitle="Brandenburg Gate"
+        popupinfo="This is a historic place you should visit">
+      </esri-map-view>
+    </div>
+  </div>
+    <script src="/build/secret.js"></script>
+</body>
+</html>
