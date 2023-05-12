@@ -27,7 +27,7 @@
     "esri-loader": "^3.7.0"
   },
   "devDependencies": {
-    "@stencil/core": "^3.1.0",
+    "@stencil/core": "^3.2.2",
     "@types/arcgis-js-api": "^4.26.0",
     "@types/jest": "27.0.3",
     "@types/node": "^18.14.6",
