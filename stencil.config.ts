@@ -8,6 +8,9 @@ export const config: Config = {
       type: 'dist'
     },
     {
+      type: 'dist-custom-elements'
+    },
+    {
       type: 'docs-readme'
     },
     {
@@ -19,7 +22,19 @@ export const config: Config = {
           warn: true
         },
         {
-          src: "index-1.html"
+          src: "app.js",
+          dest: "build/app.js",
+          warn: true
+        },
+        {
+          src: "index-mapview.html",
+          dest: "build/index-mapview.html",
+          warn: true
+        },
+        {
+          src: "index-sceneview.html",
+          dest: "build/index-sceneview.html",
+          warn: true
         }
       ],
       serviceWorker: null // disable service workers

@@ -24,7 +24,7 @@ export interface viewpointProps {
 export function parseViewpoint(viewpoint: string): viewpointProps {
   const defaultLOD:number = 2;
 
-  if (viewpoint === undefined || viewpoint === null) {
+  if (viewpoint === undefined || viewpoint === null || viewpoint == "") {
     viewpoint = "0,0," + defaultLOD;
   }
   let values:Array<any> = viewpoint.split(",");
@@ -40,6 +40,63 @@ export function parseViewpoint(viewpoint: string): viewpointProps {
 }
 
 /**
+ * Parse a string looking for the minimum and maximum numbers. It expects either one
+ * number or two numbers separated by a comma. The minimum and maximum values must be
+ * within the range of the default min and max parameters. If only one value is parsed then it
+ * is used for both min and max. If two numbers are parsed the smallest is set to
+ * the min value and the largest to the max.
+ * @param minMax {string} Either 1 or 2 numbers comma separated.
+ * @param defaultMin {number} A number to use as the default value for the minimum if not found, or the smallest minimum value allowed.
+ * @param defaultMax {number} A number to use as the default value for the maximum if not found, or the largest maximum value allowed.
+ * @returns {object} {min, max}
+ */
+export interface minMaxProps {
+  min: number,
+  max: number
+};
+
+export function parseMinMax(minMax: string, defaultMin: number, defaultMax: number): minMaxProps {
+  let min:number;
+  let max:number;
+
+  if (minMax === undefined || minMax === null || minMax == "") {
+    minMax = `${defaultMin},${defaultMax}`;
+  }
+  let values:Array<any> = minMax.split(",");
+  if (values.length < 1) {
+    values[0] = defaultMin;
+    values[1] = defaultMax;
+  } else if (values.length < 2) {
+    // if only 1 value provided then min and max should be the same value.
+    values[1] = values[0];
+  }
+  min = parseInt(values[0]);
+  if (Number.isNaN(min)) {
+    min = defaultMin;
+  }
+  max = parseInt(values[1]);
+  if (Number.isNaN(max)) {
+    max = defaultMax;
+  }
+  if (max < min) {
+    // if numbers are swapped then reverse them.
+    const hold = max;
+    max = min;
+    min = hold;
+  }
+  if (min < defaultMin) {
+    min = defaultMin;
+  }
+  if (max > defaultMax) {
+    max = defaultMax;
+  }
+  return ({
+    min: min,
+    max: max,
+  });
+}
+
+/**
  * Parse an offset string into its constituent parts: x, y. This helper
  * makes sure all the parts are valid values and assigned defaults when
  * things are missing.
@@ -49,7 +106,7 @@ export function parseViewpoint(viewpoint: string): viewpointProps {
  * @returns {offsetProps} An object made up of {x, y}
  */
 
- export interface offsetProps {
+export interface offsetProps {
   x: number,
   y: number
 };
@@ -131,5 +188,19 @@ export function isValidURL(url: string): boolean {
  * @returns {boolean} `true` when OK, `false` when bad.
  */
 export function isValidSearchPosition(position: string): boolean {
-  return ["top-left", "top-right", "bottom-left", "bottom-right"].indexOf(position) >= 0;
+  return ["top-left", "top-right", "bottom-left", "bottom-right", "off"].indexOf(position) >= 0;
+}
+
+/**
+ * Given a user attribute setting for the UI show setting, return either true to show the UI
+ * or false to hide it.
+ * @param uiSetting {string} The string to check.
+ * @returns {boolean} Either true or false.
+ */
+export function showUI(uiSetting: string): boolean {
+  const allLower = uiSetting ? uiSetting.toLocaleLowerCase() : "";
+  if (["false", "off", "hide", "disable", "0"].indexOf(allLower) >= 0) {
+    return false;
+  }
+  return true;
 }

@@ -4,8 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Esri map view component</title>
-
-  <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
+  <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
   <script type="module" src="/build/esri-map-view.esm.js"></script>
   <script nomodule src="/build/esri-map-view.js"></script>
   <style>
@@ -39,21 +38,29 @@
       padding: 0;
       margin: 0;
     }
+
+    .test-button {
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
   </style>
 </head>
 <body>
-
   <div class="map-row">
       <div class="column-left">
         <esri-map-view
           id="mapview"
           apikey="YOUR_API_KEY"
-          basemap="osm-streets"
+          basemap="arcgis/imagery/standard"
           viewpoint="13.3761697,52.5166449,15"
           layers="d3e5c29f5e404aa4b2de29a9f0e37996"
           search="top-right"
-          symbol="pin:red"
-          symboloffset="24,12"
+          ui="show"
+          minmaxzoom="14,16"
+          symbol="green-pin"
+          symboloffset="0,0"
           popuptitle="Brandenburg Gate"
           popupinfo="This is a historic place you should visit">
         </esri-map-view>
@@ -62,18 +69,21 @@
         <esri-scene-view
           id="sceneview"
           apikey="YOUR_API_KEY"
-          basemap="arcgis-imagery-standard"
+          basemap="arcgis/imagery/standard"
           viewpoint="13.3761697,52.5166449,15"
           layers="d3e5c29f5e404aa4b2de29a9f0e37996"
           search="top-right"
-          symbol="pin:red"
-          symboloffset="24,12"
+          ui="show"
+          minmaxzoom="14,16"
+          symbol="green-pin"
+          symboloffset="0,0"
           popuptitle="Brandenburg Gate"
           popupinfo="This is a historic place you should visit">
         </esri-scene-view>
       </div>
     </div>
+    <div><button id="test" class="test-button">Test</button></div>
     <script src="/build/secret.js"></script>
-
+    <script src="/build/app.js"></script>
 </body>
 </html>

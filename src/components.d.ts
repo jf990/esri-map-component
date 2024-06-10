@@ -16,15 +16,19 @@ export namespace Components {
          */
         "basemap": string;
         /**
-          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.
+          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
          */
         "layers": string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.
+          * Set the minimum and maximum zoom levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 14,16 will constrain the zoom to a minimum of 14 and a maximum of 16. If only one number is provided (or valid) then both min and max are set to that value.
+         */
+        "minmaxzoom": string;
+        /**
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
          */
         "popupinfo": string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
          */
         "popuptitle": string;
         /**
@@ -36,11 +40,15 @@ export namespace Components {
          */
         "symbol": string;
         /**
-          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.
+          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
          */
         "symboloffset": string;
         /**
-          * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint is used. If you do set `viewpoint` and `webmap` then this setting will override the initial viewpoint of the web map.
+          * You can show or hide the map UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+         */
+        "ui": string;
+        /**
+          * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: longitude (x), latitude (y), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint is used. If you do set `viewpoint` and `webmap` then this setting will override the initial viewpoint of the web map.
          */
         "viewpoint": string;
         /**
@@ -54,7 +62,7 @@ export namespace Components {
          */
         "apikey": string;
         /**
-          * Indicate a basemap id to use for the map. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
+          * Indicate a basemap id to use for the map. Select one of the basemap style options from the enumeration https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap, or the item ID of a custom basemap style. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
          */
         "basemap": string;
         /**
@@ -62,15 +70,19 @@ export namespace Components {
          */
         "cameraPosition": string;
         /**
-          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.
+          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
          */
         "layers": string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.
+          * Set the minimum and maximum altitude levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 1400,160000 will constrain the camera altitude to a minimum of 1400 and a maximum of 160000. If only one number is provided (or valid) then both min and max are set to that value.
+         */
+        "minmaxalt": string;
+        /**
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
          */
         "popupinfo": string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
          */
         "popuptitle": string;
         /**
@@ -82,11 +94,15 @@ export namespace Components {
          */
         "symbol": string;
         /**
-          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.
+          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
          */
         "symboloffset": string;
         /**
-          * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. However, this setting will override the web scenes initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position.
+          * You can show or hide the scene UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+         */
+        "ui": string;
+        /**
+          * Indicate an initial viewpoint to focus the scene. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. However, this setting will override the web scenes initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position.
          */
         "viewpoint": string;
         /**
@@ -95,14 +111,46 @@ export namespace Components {
         "webscene": string;
     }
 }
+export interface EsriMapViewCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLEsriMapViewElement;
+}
+export interface EsriSceneViewCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLEsriSceneViewElement;
+}
 declare global {
+    interface HTMLEsriMapViewElementEventMap {
+        "mapLoaded": any;
+        "mapLoadError": any;
+    }
     interface HTMLEsriMapViewElement extends Components.EsriMapView, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLEsriMapViewElementEventMap>(type: K, listener: (this: HTMLEsriMapViewElement, ev: EsriMapViewCustomEvent<HTMLEsriMapViewElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLEsriMapViewElementEventMap>(type: K, listener: (this: HTMLEsriMapViewElement, ev: EsriMapViewCustomEvent<HTMLEsriMapViewElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLEsriMapViewElement: {
         prototype: HTMLEsriMapViewElement;
         new (): HTMLEsriMapViewElement;
     };
+    interface HTMLEsriSceneViewElementEventMap {
+        "mapLoaded": any;
+        "mapLoadError": any;
+    }
     interface HTMLEsriSceneViewElement extends Components.EsriSceneView, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLEsriSceneViewElementEventMap>(type: K, listener: (this: HTMLEsriSceneViewElement, ev: EsriSceneViewCustomEvent<HTMLEsriSceneViewElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLEsriSceneViewElementEventMap>(type: K, listener: (this: HTMLEsriSceneViewElement, ev: EsriSceneViewCustomEvent<HTMLEsriSceneViewElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLEsriSceneViewElement: {
         prototype: HTMLEsriSceneViewElement;
@@ -124,15 +172,27 @@ declare namespace LocalJSX {
          */
         "basemap"?: string;
         /**
-          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.
+          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
          */
         "layers"?: string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.
+          * Set the minimum and maximum zoom levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 14,16 will constrain the zoom to a minimum of 14 and a maximum of 16. If only one number is provided (or valid) then both min and max are set to that value.
+         */
+        "minmaxzoom"?: string;
+        /**
+          * The `mapLoadError` event fires if the basemap or web map did not load due to some type of error. Check the console for error messages.
+         */
+        "onMapLoadError"?: (event: EsriMapViewCustomEvent<any>) => void;
+        /**
+          * The `mapLoaded` event fires when the basemap or web map has finished loading.
+         */
+        "onMapLoaded"?: (event: EsriMapViewCustomEvent<any>) => void;
+        /**
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
          */
         "popupinfo"?: string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
          */
         "popuptitle"?: string;
         /**
@@ -144,11 +204,15 @@ declare namespace LocalJSX {
          */
         "symbol"?: string;
         /**
-          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.
+          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
          */
         "symboloffset"?: string;
         /**
-          * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint is used. If you do set `viewpoint` and `webmap` then this setting will override the initial viewpoint of the web map.
+          * You can show or hide the map UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+         */
+        "ui"?: string;
+        /**
+          * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: longitude (x), latitude (y), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint is used. If you do set `viewpoint` and `webmap` then this setting will override the initial viewpoint of the web map.
          */
         "viewpoint"?: string;
         /**
@@ -162,7 +226,7 @@ declare namespace LocalJSX {
          */
         "apikey"?: string;
         /**
-          * Indicate a basemap id to use for the map. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
+          * Indicate a basemap id to use for the map. Select one of the basemap style options from the enumeration https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap, or the item ID of a custom basemap style. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
          */
         "basemap"?: string;
         /**
@@ -170,15 +234,27 @@ declare namespace LocalJSX {
          */
         "cameraPosition"?: string;
         /**
-          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers can be separated with a comma.
+          * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
          */
         "layers"?: string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `content` for that pop-up.
+          * Set the minimum and maximum altitude levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 1400,160000 will constrain the camera altitude to a minimum of 1400 and a maximum of 160000. If only one number is provided (or valid) then both min and max are set to that value.
+         */
+        "minmaxalt"?: string;
+        /**
+          * The `mapLoadError` event fires if the basemap or web map did not load due to some type of error. Check the console for error messages.
+         */
+        "onMapLoadError"?: (event: EsriSceneViewCustomEvent<any>) => void;
+        /**
+          * The `mapLoaded` event fires when the basemap or web map has finished loading.
+         */
+        "onMapLoaded"?: (event: EsriSceneViewCustomEvent<any>) => void;
+        /**
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
          */
         "popupinfo"?: string;
         /**
-          * If `symbol` is set, tapping the image will show a pop-up. This is the `title` for that pop-up.
+          * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
          */
         "popuptitle"?: string;
         /**
@@ -190,11 +266,15 @@ declare namespace LocalJSX {
          */
         "symbol"?: string;
         /**
-          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset to adjust the symbol. Use a comma separated coordinate pair.
+          * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
          */
         "symboloffset"?: string;
         /**
-          * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. However, this setting will override the web scenes initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position.
+          * You can show or hide the scene UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+         */
+        "ui"?: string;
+        /**
+          * Indicate an initial viewpoint to focus the scene. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. However, this setting will override the web scenes initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position.
          */
         "viewpoint"?: string;
         /**

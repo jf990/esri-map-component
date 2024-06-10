@@ -3,11 +3,13 @@
  */
 import {
   parseViewpoint,
+  parseMinMax,
   parseCameraPosition,
   parseOffset,
   isValidItemID,
   isValidURL,
-  isValidSearchPosition
+  isValidSearchPosition,
+  showUI
 } from './utils';
 
 describe('parseViewpoint', () => {
@@ -62,6 +64,85 @@ describe('parseViewpoint', () => {
       latitude: 40.872496,
       levelOfDetail: 9,
       scale: 0
+    });
+  });
+});
+
+describe('parseMinMax', () => {
+  it('parseMinMax returns object for no valid input', () => {
+    expect(parseMinMax(undefined, 0, 0)).toEqual({
+      min: 0,
+      max: 0
+    });
+  });
+
+  it('parseMinMax returns object for empty input', () => {
+    expect(parseMinMax("", 0, 0)).toEqual({
+      min: 0,
+      max: 0
+    });
+  });
+
+  it('parseMinMax returns object for reversed input', () => {
+    expect(parseMinMax("22,13", 1, 24)).toEqual({
+      min: 13,
+      max: 22
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("5,12", 1, 24)).toEqual({
+      min: 5,
+      max: 12
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("5", 1, 24)).toEqual({
+      min: 5,
+      max: 5
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("5,5", 1, 24)).toEqual({
+      min: 5,
+      max: 5
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("64,-1", 0, 24)).toEqual({
+      min: 0,
+      max: 24
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("64000, 22", 0, 250000000)).toEqual({
+      min: 22,
+      max: 64000
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("250000000, 22", 50, 200000000)).toEqual({
+      min: 50,
+      max: 200000000
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("22, 250000000", 50, 200000000)).toEqual({
+      min: 50,
+      max: 200000000
+    });
+  });
+
+  it('parseMinMax returns object for expected input', () => {
+    expect(parseMinMax("22, 250000, 49, 50, 51", 50, 200000000)).toEqual({
+      min: 50,
+      max: 250000
     });
   });
 });
@@ -191,6 +272,7 @@ describe("Valid search position", () => {
     expect(isValidSearchPosition("bottom-right")).toBeTruthy();
     expect(isValidSearchPosition("top-right")).toBeTruthy();
     expect(isValidSearchPosition("bottom-left")).toBeTruthy();
+    expect(isValidSearchPosition("off")).toBeTruthy();
   });
 
   it('returns false for invalid input', () => {
@@ -200,5 +282,29 @@ describe("Valid search position", () => {
     expect(isValidSearchPosition("0")).toBeFalsy();
     expect(isValidSearchPosition(" ")).toBeFalsy();
     expect(isValidSearchPosition("1234")).toBeFalsy();
+    expect(isValidSearchPosition("on")).toBeFalsy();
+    expect(isValidSearchPosition("true")).toBeFalsy();
+  });
+});
+
+describe("Valid UI setting", () => {
+
+  it("returns true for request to show (or the default)", () => {
+    expect(showUI("on")).toBe(true);
+    expect(showUI("show")).toBe(true);
+    expect(showUI("enable")).toBe(true);
+    expect(showUI("true")).toBe(true);
+    expect(showUI("1")).toBe(true);
+    expect(showUI("")).toBe(true);
+    expect(showUI(null)).toBe(true);
+    expect(showUI(undefined)).toBe(true);
+  });
+
+  it("returns false for request to hide", () => {
+    expect(showUI("hide")).toBe(false);
+    expect(showUI("false")).toBe(false);
+    expect(showUI("disable")).toBe(false);
+    expect(showUI("0")).toBe(false);
+    expect(showUI("abc")).toBe(true);
   });
 });
