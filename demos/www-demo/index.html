@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Esri map view component pure HTML demo</title>
-  <script type="module" src="https://unpkg.com/esri-map-view@0.8.1/dist/esri-map-view/esri-map-view.esm.js"></script>
+  <script type="module" src="https://unpkg.com/esri-map-view@0.9.1/dist/esri-map-view/esri-map-view.esm.js"></script>
   <style>
     html, body {
       height: 100%;
@@ -55,11 +55,11 @@
         <esri-scene-view
           id="sceneview"
           apikey="YOUR_API_KEY"
-          basemap="arcgis/oceans"
+          basemap="arcgis/imagery/standard"
+          viewpoint="13.3761697,52.5166449,16"
           layers="d3e5c29f5e404aa4b2de29a9f0e37996"
           search="top-right"
           symbol="pin:red"
-          viewpoint="13.3761697,52.5166449,15"
           popuptitle="Brandenburg Gate"
           popupinfo="This is a historic place you should visit">
         </esri-scene-view>

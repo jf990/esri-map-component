@@ -68,7 +68,7 @@ export namespace Components {
         /**
           * Indicate the camera position for the initial scene viewpoint. This is a string of five comma separated numbers as follows: x,y,z,heading,tilt. If you set this it will override `viewpoint` settings.
          */
-        "cameraPosition": string;
+        "cameraposition": string;
         /**
           * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
          */
@@ -232,7 +232,7 @@ declare namespace LocalJSX {
         /**
           * Indicate the camera position for the initial scene viewpoint. This is a string of five comma separated numbers as follows: x,y,z,heading,tilt. If you set this it will override `viewpoint` settings.
          */
-        "cameraPosition"?: string;
+        "cameraposition"?: string;
         /**
           * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
          */

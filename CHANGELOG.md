@@ -1,8 +1,14 @@
 # Changelog
 
+## 0.9.1 2024-09-23
+
+- Update ArcGIS Maps SDK for JavaScript version 4.30
+- fix bug with setting the camera position
+- fix bug placing symbol when using camera position
+
 ## 0.8.1 2024-06-07
 
-- Update ArcGIS Maps SDK for JavaScript version 4.26
+- Update ArcGIS Maps SDK for JavaScript version 4.28
 - add "reactive" functionality to dynamically change attributes
 - add new `ui` attribute
 - add new `minmaxzoom` (map view) and `minmaxalt` (scene view) attributes

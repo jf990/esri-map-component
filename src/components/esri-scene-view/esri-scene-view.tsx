@@ -196,12 +196,12 @@ export class EsriSceneView {
    * separated numbers as follows: x,y,z,heading,tilt. If you set this it will override `viewpoint`
    * settings.
    */
-  @Prop({ reflect: true, mutable: true }) cameraPosition: string = "";
+  @Prop({ reflect: true, mutable: true }) cameraposition: string = "";
   @Watch('cameraPosition')
   watchCameraPositionHandler(newValue: string, oldValue: string) {
     const componentContext = this;
     if (newValue != oldValue) {
-      componentContext.cameraPosition = newValue;
+      componentContext.cameraposition = newValue;
       if (componentContext.verifyViewpoint()) {
         if (componentContext.esriSceneView == null) {
           return;
@@ -217,12 +217,12 @@ export class EsriSceneView {
         })
         .catch(function() {
           componentContext.viewChangePending = false;
-          componentContext.cameraPosition = oldValue;
+          componentContext.cameraposition = oldValue;
           componentContext.verifyViewpoint();
         });
       } else {
         // the new camera position failed so restore the old camera position.
-        componentContext.cameraPosition = oldValue;
+        componentContext.cameraposition = oldValue;
         componentContext.verifyViewpoint();
       }
     }
@@ -807,14 +807,16 @@ export class EsriSceneView {
   }
 
   /**
-   * Verify the viewpoint attribute and break it down to its individual parts.
+   * Verify the cameraposition or viewpoint attribute and break it down to its individual parts.
    * @returns {boolean} True if a viewpoint is parsed.
    */
   private verifyViewpoint(): boolean {
     let isValid:boolean = true;
 
-    if (this.cameraPosition) {
-      this.cameraSettings = parseCameraPosition(this.cameraPosition);
+    if (this.cameraposition) {
+      this.cameraSettings = parseCameraPosition(this.cameraposition);
+      this.longitude = this.cameraSettings.x;
+      this.latitude = this.cameraSettings.y;
     } else {
       if (!this.viewpoint && !this.webscene) {
         // if no initial viewpoint is specified then set a default
