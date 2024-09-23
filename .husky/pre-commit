@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
 # Find any ArcGIS API keys in commit
 # Adapted from https://github.com/sciencehistory/scihist_digicoll
-. "$(dirname -- "$0")/_/husky.sh"
 
 # Redirect output to stderr.
 exec 1>&2
