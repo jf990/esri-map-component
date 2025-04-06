@@ -18,22 +18,22 @@ export const config: Config = {
       copy: [
         {
           src: "secret.js",
-          dest: "build",
+          dest: "build/secret.js",
           warn: true
         },
         {
           src: "app.js",
-          dest: "build",
+          dest: "build/app.js",
           warn: true
         },
         {
           src: "index-mapview.html",
-          dest: "build",
+          dest: "build/index-mapview.html",
           warn: true
         },
         {
           src: "index-sceneview.html",
-          dest: "build",
+          dest: "build/index-sceneview.html",
           warn: true
         }
       ],

@@ -14,6 +14,7 @@ import {
   isValidSearchPosition,
   showUI
 } from "../../utils/utils";
+import esriConfig from "@arcgis/core/config.js";
 
 @Component({
   tag: "esri-map-view",
@@ -32,7 +33,7 @@ export class EsriMapView {
    */
   @Event() mapLoadError: EventEmitter;
 
-  private ArcGISJavaScriptVersion: string = "4.29";
+  private ArcGISJavaScriptVersion: string = "4.32";
   private assetPath = getAssetPath("./assets/");
   private mapViewWidgets = ["zoom"];
 
@@ -341,20 +342,14 @@ export class EsriMapView {
    * The esri configuration object https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html
    */
   private setAuthentication() {
-    return new Promise<void>((configSet, authenticationFailed) => {
-      loadModules(["esri/config"])
-      .then(([esriConfig]) => {
-        this.esriConfig = esriConfig;
-        if (this.apikey) {
-          this.esriConfig.apiKey = this.apikey;
-        } else {
-          this.esriConfig.request.useIdentity = true;
-        }
-        configSet();
-      })
-      .catch((loadException) => {
-        authenticationFailed(loadException);
-      });
+    return new Promise<void>((configSet) => {
+      if (this.apikey) {
+        esriConfig.apiKey = this.apikey;
+      } else {
+        esriConfig.request.useIdentity = true;
+      }
+      this.esriConfig = esriConfig;
+      configSet();
     });
   }
 
