@@ -342,13 +342,20 @@ export class EsriMapView {
    * The esri configuration object https://developers.arcgis.com/javascript/latest/api-reference/esri-config.html
    */
   private setAuthentication() {
-    return new Promise<void>((configSet) => {
-      if (this.apikey) {
-        esriConfig.apiKey = this.apikey;
-      } else {
-        esriConfig.request.useIdentity = true;
-      }
-      configSet();
+    return new Promise<void>((configSet, authenticationFailed) => {
+      loadModules(["esri/config"])
+      .then(([esriConfig]) => {
+        this.esriConfig = esriConfig;
+        if (this.apikey) {
+          this.esriConfig.apiKey = this.apikey;
+        } else {
+          this.esriConfig.request.useIdentity = true;
+        }
+        configSet();
+      })
+      .catch((loadException) => {
+        authenticationFailed(loadException);
+      });
     });
   }
 
