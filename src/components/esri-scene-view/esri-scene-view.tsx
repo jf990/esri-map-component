@@ -16,6 +16,7 @@ import {
   parseCameraPosition,
   cameraProps
 } from "../../utils/utils";
+import esriConfig from "@arcgis/core/config.js";
 
 @Component({
   tag: "esri-scene-view",
@@ -34,14 +35,14 @@ export class EsriSceneView {
    */
   @Event() mapLoadError: EventEmitter;
 
-  private ArcGISJavaScriptVersion: string = "4.29";
+  private ArcGISJavaScriptVersion: string = "4.32";
   private assetPath = getAssetPath("./assets/");
   private sceneViewWidgets = ["zoom", "compass", "navigation-toggle"];
 
   /**
    * Properties to hold the map, scene view, and initial viewpoint
    */
-  esriConfig: __esri.config = null;
+  esriConfig: esriConfig;
   esriMap: __esri.Map = null;
   esriWebScene: __esri.WebScene = null;
   esriSceneView: __esri.SceneView = null;

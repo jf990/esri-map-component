@@ -14,6 +14,7 @@ import {
   isValidSearchPosition,
   showUI
 } from "../../utils/utils";
+import esriConfig from "@arcgis/core/config.js";
 
 @Component({
   tag: "esri-map-view",
@@ -32,14 +33,14 @@ export class EsriMapView {
    */
   @Event() mapLoadError: EventEmitter;
 
-  private ArcGISJavaScriptVersion: string = "4.29";
+  private ArcGISJavaScriptVersion: string = "4.32";
   private assetPath = getAssetPath("./assets/");
   private mapViewWidgets = ["zoom"];
 
   /**
    * Properties to hold the map, map view, and initial viewpoint
    */
-  esriConfig: __esri.config = null;
+  esriConfig: esriConfig;
   esriMap: __esri.Map = null;
   esriWebMap: __esri.WebMap = null;
   esriMapView: __esri.MapView = null;
