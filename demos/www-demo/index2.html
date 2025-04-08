@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Esri map view component pure HTML demo</title>
-  <script type="module" src="https://unpkg.com/esri-map-view@0.9.1/dist/esri-map-view/esri-map-view.esm.js"></script>
+  <script type="module" src="https://unpkg.com/esri-map-view@0.9.2/dist/esri-map-view/esri-map-view.esm.js"></script>
   <style>
     html, body {
       height: 100%;
@@ -70,22 +70,6 @@
       <p>Numbered below are descriptions of cartographic elements that are commonly found on a map layout. Some maps have all eight elements while other maps may only contain a few of them.</p>
     </div>
   </div>
-  <div class="map-row">
-      <div class="column-left">
-        <esri-map-view
-          id="mapview"
-          apikey="YOUR_API_KEY"
-          basemap="osm/streets"
-          viewpoint="13.3761697,52.5166449,15"
-          layers="d3e5c29f5e404aa4b2de29a9f0e37996"
-          search="top-right"
-          symbol="pin:red"
-          symboloffset="0,0"
-          popuptitle="Brandenburg Gate"
-          popupinfo="This is a historic place you should visit">
-        </esri-map-view>
-      </div>
-    </div>
-    <script src="./secret.js"></script>
+  <script src="./secret.js"></script>
 </body>
 </html>
