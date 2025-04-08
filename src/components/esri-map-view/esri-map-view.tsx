@@ -40,7 +40,7 @@ export class EsriMapView {
   /**
    * Properties to hold the map, map view, and initial viewpoint
    */
-  esriConfig: __esri.config = null;
+  esriConfig: esriConfig;
   esriMap: __esri.Map = null;
   esriWebMap: __esri.WebMap = null;
   esriMapView: __esri.MapView = null;
@@ -348,7 +348,6 @@ export class EsriMapView {
       } else {
         esriConfig.request.useIdentity = true;
       }
-      this.esriConfig = esriConfig;
       configSet();
     });
   }

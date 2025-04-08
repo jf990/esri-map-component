@@ -42,7 +42,7 @@ export class EsriSceneView {
   /**
    * Properties to hold the map, scene view, and initial viewpoint
    */
-  esriConfig: __esri.config = null;
+  esriConfig: esriConfig;
   esriMap: __esri.Map = null;
   esriWebScene: __esri.WebScene = null;
   esriSceneView: __esri.SceneView = null;
@@ -392,7 +392,6 @@ export class EsriSceneView {
       } else {
         esriConfig.request.useIdentity = true;
       }
-      this.esriConfig = esriConfig;
       configSet();
     });
   }
