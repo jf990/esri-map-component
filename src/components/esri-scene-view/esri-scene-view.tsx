@@ -35,7 +35,7 @@ export class EsriSceneView {
    */
   @Event() mapLoadError: EventEmitter;
 
-  private ArcGISJavaScriptVersion: string = "4.32";
+  private ArcGISJavaScriptVersion: string = "4.33";
   private assetPath = getAssetPath("./assets/");
   private sceneViewWidgets = ["zoom", "compass", "navigation-toggle"];
 
