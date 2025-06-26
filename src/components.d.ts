@@ -9,104 +9,129 @@ export namespace Components {
     interface EsriMapView {
         /**
           * Set your API key. Learn more about [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
+          * @default "YOUR_API_KEY"
          */
         "apikey": string;
         /**
           * Indicate a basemap id to use for the map. Select one of the basemap style options from the enumeration https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap, or the item ID of a custom basemap style. This property will be ignored by `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
+          * @default "osm-streets"
          */
         "basemap": string;
         /**
           * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
+          * @default ""
          */
         "layers": string;
         /**
           * Set the minimum and maximum zoom levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 14,16 will constrain the zoom to a minimum of 14 and a maximum of 16. If only one number is provided (or valid) then both min and max are set to that value.
+          * @default ""
          */
         "minmaxzoom": string;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
+          * @default ""
          */
         "popupinfo": string;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
+          * @default ""
          */
         "popuptitle": string;
         /**
           * Include a search widget by indicating where on the map view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
+          * @default ""
          */
         "search": string;
         /**
           * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.
+          * @default ""
          */
         "symbol": string;
         /**
           * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
+          * @default ""
          */
         "symboloffset": string;
         /**
           * You can show or hide the map UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+          * @default ""
          */
         "ui": string;
         /**
           * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: longitude (x), latitude (y), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint is used. If you do set `viewpoint` and `webmap` then this setting will override the initial viewpoint of the web map.
+          * @default ""
          */
         "viewpoint": string;
         /**
           * Indicate a web map id to use for the map. If neither `webmap` nor `basemap` are set, then a default basemap is assigned.
+          * @default ""
          */
         "webmap": string;
     }
     interface EsriSceneView {
         /**
           * Set your API key. Learn more about [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
+          * @default "YOUR_API_KEY"
          */
         "apikey": string;
         /**
           * Indicate a basemap id to use for the map. Select one of the basemap style options from the enumeration https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap, or the item ID of a custom basemap style. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
+          * @default "arcgis/imagery/standard"
          */
         "basemap": string;
         /**
           * Indicate the camera position for the initial scene viewpoint. This is a string of five comma separated numbers as follows: x,y,z,heading,tilt. If you set this it will override `viewpoint` settings.
+          * @default ""
          */
         "cameraposition": string;
         /**
           * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
+          * @default ""
          */
         "layers": string;
         /**
           * Set the minimum and maximum altitude levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 1400,160000 will constrain the camera altitude to a minimum of 1400 and a maximum of 160000. If only one number is provided (or valid) then both min and max are set to that value.
+          * @default ""
          */
         "minmaxalt": string;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
+          * @default ""
          */
         "popupinfo": string;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
+          * @default ""
          */
         "popuptitle": string;
         /**
           * Include a search widget by indicating where on the scene view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
+          * @default ""
          */
         "search": string;
         /**
           * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.
+          * @default ""
          */
         "symbol": string;
         /**
           * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
+          * @default ""
          */
         "symboloffset": string;
         /**
           * You can show or hide the scene UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+          * @default ""
          */
         "ui": string;
         /**
           * Indicate an initial viewpoint to focus the scene. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. However, this setting will override the web scenes initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position.
+          * @default ""
          */
         "viewpoint": string;
         /**
           * Indicate a web scene id to use for the map. If neither `webscene` nor `basemap` are set, then a default basemap is assigned.
+          * @default ""
          */
         "webscene": string;
     }
@@ -165,18 +190,22 @@ declare namespace LocalJSX {
     interface EsriMapView {
         /**
           * Set your API key. Learn more about [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
+          * @default "YOUR_API_KEY"
          */
         "apikey"?: string;
         /**
           * Indicate a basemap id to use for the map. Select one of the basemap style options from the enumeration https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap, or the item ID of a custom basemap style. This property will be ignored by `webmap` if that attribute is provided. If neither `webmap` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
+          * @default "osm-streets"
          */
         "basemap"?: string;
         /**
           * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
+          * @default ""
          */
         "layers"?: string;
         /**
           * Set the minimum and maximum zoom levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 14,16 will constrain the zoom to a minimum of 14 and a maximum of 16. If only one number is provided (or valid) then both min and max are set to that value.
+          * @default ""
          */
         "minmaxzoom"?: string;
         /**
@@ -189,56 +218,69 @@ declare namespace LocalJSX {
         "onMapLoaded"?: (event: EsriMapViewCustomEvent<any>) => void;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
+          * @default ""
          */
         "popupinfo"?: string;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
+          * @default ""
          */
         "popuptitle"?: string;
         /**
           * Include a search widget by indicating where on the map view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
+          * @default ""
          */
         "search"?: string;
         /**
           * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.
+          * @default ""
          */
         "symbol"?: string;
         /**
           * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
+          * @default ""
          */
         "symboloffset"?: string;
         /**
           * You can show or hide the map UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+          * @default ""
          */
         "ui"?: string;
         /**
           * Indicate an initial viewpoint to focus the map. This is a string of 3 comma-separated numbers expected: longitude (x), latitude (y), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webmap` as the web map's initial viewpoint is used. If you do set `viewpoint` and `webmap` then this setting will override the initial viewpoint of the web map.
+          * @default ""
          */
         "viewpoint"?: string;
         /**
           * Indicate a web map id to use for the map. If neither `webmap` nor `basemap` are set, then a default basemap is assigned.
+          * @default ""
          */
         "webmap"?: string;
     }
     interface EsriSceneView {
         /**
           * Set your API key. Learn more about [API keys](https://developers.arcgis.com/documentation/mapping-apis-and-services/security/api-keys/).
+          * @default "YOUR_API_KEY"
          */
         "apikey"?: string;
         /**
           * Indicate a basemap id to use for the map. Select one of the basemap style options from the enumeration https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap, or the item ID of a custom basemap style. This property will be overridden by `webscene` if that attribute is provided. If neither `webscene` nor `basemap` are set, then a default basemap is assigned. Options for `basemap` are defined in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/latest/api-reference/esri-Map.html#basemap).
+          * @default "arcgis/imagery/standard"
          */
         "basemap"?: string;
         /**
           * Indicate the camera position for the initial scene viewpoint. This is a string of five comma separated numbers as follows: x,y,z,heading,tilt. If you set this it will override `viewpoint` settings.
+          * @default ""
          */
         "cameraposition"?: string;
         /**
           * Specify 0 or more layers to add on top of the basemap. Each layer is a string that is either a URL to the feature service, or the item ID of the feature service. Multiple layers are separated with a comma.
+          * @default ""
          */
         "layers"?: string;
         /**
           * Set the minimum and maximum altitude levels allowed by either the UI zoom controls or the mouse/touch interaction. This is a comma separated string of 2 numbers, the first is the minimum and the second is the maximum. For example, 1400,160000 will constrain the camera altitude to a minimum of 1400 and a maximum of 160000. If only one number is provided (or valid) then both min and max are set to that value.
+          * @default ""
          */
         "minmaxalt"?: string;
         /**
@@ -251,34 +293,42 @@ declare namespace LocalJSX {
         "onMapLoaded"?: (event: EsriSceneViewCustomEvent<any>) => void;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `content` for that pop-up.
+          * @default ""
          */
         "popupinfo"?: string;
         /**
           * If `symbol` is set, tapping the symbol will show a pop-up. This is the `title` for that pop-up.
+          * @default ""
          */
         "popuptitle"?: string;
         /**
           * Include a search widget by indicating where on the scene view it should appear. The valid values for this attribute are `top-left`, `top-right`, `bottom-left`, `bottom-right`. If this attribute is empty/missing or an invalid value then a search widget will not show.
+          * @default ""
          */
         "search"?: string;
         /**
           * Indicate a symbol to use to mark the location of the initial viewpoint. This is the fully qualified URL to a 64x64 px PNG image. CORS is respected when accessing the image. You can also specify `green-pin` to use a green map pin as the symbol. You can also specify `pin:{color}` to use a text symbol marker and the color value. Use a 6-digit HTML color value or the standard HTML color name.
+          * @default ""
          */
         "symbol"?: string;
         /**
           * Some symbols will require an x/y offset so that the registration point of the symbol is exactly on the map point. Here you can specify an x,y offset, in pixels, to adjust the symbol. Use a comma separated coordinate pair.
+          * @default ""
          */
         "symboloffset"?: string;
         /**
           * You can show or hide the scene UI (Pan/zoom controls) with the `ui` attribute. Setting `ui=hide` or `ui=off` to hide it, set `ui=show` or `ui=on` to show it. The default value is to show the ui.
+          * @default ""
          */
         "ui"?: string;
         /**
           * Indicate an initial viewpoint to focus the scene. This is a string of 3 comma-separated numbers expected: latitude (y), longitude (x), and levelOfDetail (LOD). Example: "22.7783,34.1234,9". You should set this if you set a `basemap`. You do not need to set this if you set `webscene` as the web scene's initial viewpoint is used. However, this setting will override the web scenes initial viewpoint. The `viewpoint` is not used if `cameraPosition` is also set. For 3D scenes, the level of detail is translated into a 3D camera position height of Z-axis position.
+          * @default ""
          */
         "viewpoint"?: string;
         /**
           * Indicate a web scene id to use for the map. If neither `webscene` nor `basemap` are set, then a default basemap is assigned.
+          * @default ""
          */
         "webscene"?: string;
     }

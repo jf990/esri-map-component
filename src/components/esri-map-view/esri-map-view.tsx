@@ -33,7 +33,7 @@ export class EsriMapView {
    */
   @Event() mapLoadError: EventEmitter;
 
-  private ArcGISJavaScriptVersion: string = "4.32";
+  private ArcGISJavaScriptVersion: string = "4.33";
   private assetPath = getAssetPath("./assets/");
   private mapViewWidgets = ["zoom"];
 
