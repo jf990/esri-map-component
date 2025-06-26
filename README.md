@@ -125,7 +125,7 @@ There are several ways to include the custom component in your web project.
 - Include a script tag on your page
 
 ```html
-<script type="module" src="https://unpkg.com/esri-map-view@0.9.2/dist/esri-map-view/esri-map-view.esm.js"></script>
+<script type="module" src="https://unpkg.com/esri-map-view@0.9.3/dist/esri-map-view/esri-map-view.esm.js"></script>
 ```
 
 Then you can use the element anywhere in your HTML, template, JSX, etc.
