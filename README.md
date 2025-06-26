@@ -200,7 +200,8 @@ Once your new functionality is ready to release, perform the following:
 
 1. Regenerate the documentation. Run `npm run build`.
 2. Update README.md, if required. Documentation updates are required if you change any of the properties or code comments.
-3. Push up your branch and issue a pull request.
+3. Update the CHANGELOG.md file with the new version id, publish date, and the significant changes made.
+4. Push up your branch and issue a pull request.
 
 ### Demos
 
