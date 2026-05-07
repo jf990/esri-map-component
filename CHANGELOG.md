@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.4 2026-05-07
+
+- Update ArcGIS Maps SDK for JavaScript version 4.34
+- Update internal dependencies
+- update README instructions for development
+
 ## 0.9.3 2025-06-26
 
 - Update ArcGIS Maps SDK for JavaScript version 4.33
