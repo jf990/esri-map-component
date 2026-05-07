@@ -332,17 +332,48 @@ declare namespace LocalJSX {
          */
         "webscene"?: string;
     }
+
+    interface EsriMapViewAttributes {
+        "apikey": string;
+        "basemap": string;
+        "webmap": string;
+        "viewpoint": string;
+        "layers": string;
+        "search": string;
+        "symbol": string;
+        "symboloffset": string;
+        "popuptitle": string;
+        "popupinfo": string;
+        "ui": string;
+        "minmaxzoom": string;
+    }
+    interface EsriSceneViewAttributes {
+        "apikey": string;
+        "basemap": string;
+        "webscene": string;
+        "viewpoint": string;
+        "cameraposition": string;
+        "layers": string;
+        "search": string;
+        "symbol": string;
+        "symboloffset": string;
+        "popuptitle": string;
+        "popupinfo": string;
+        "ui": string;
+        "minmaxalt": string;
+    }
+
     interface IntrinsicElements {
-        "esri-map-view": EsriMapView;
-        "esri-scene-view": EsriSceneView;
+        "esri-map-view": Omit<EsriMapView, keyof EsriMapViewAttributes> & { [K in keyof EsriMapView & keyof EsriMapViewAttributes]?: EsriMapView[K] } & { [K in keyof EsriMapView & keyof EsriMapViewAttributes as `attr:${K}`]?: EsriMapViewAttributes[K] } & { [K in keyof EsriMapView & keyof EsriMapViewAttributes as `prop:${K}`]?: EsriMapView[K] };
+        "esri-scene-view": Omit<EsriSceneView, keyof EsriSceneViewAttributes> & { [K in keyof EsriSceneView & keyof EsriSceneViewAttributes]?: EsriSceneView[K] } & { [K in keyof EsriSceneView & keyof EsriSceneViewAttributes as `attr:${K}`]?: EsriSceneViewAttributes[K] } & { [K in keyof EsriSceneView & keyof EsriSceneViewAttributes as `prop:${K}`]?: EsriSceneView[K] };
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "esri-map-view": LocalJSX.EsriMapView & JSXBase.HTMLAttributes<HTMLEsriMapViewElement>;
-            "esri-scene-view": LocalJSX.EsriSceneView & JSXBase.HTMLAttributes<HTMLEsriSceneViewElement>;
+            "esri-map-view": LocalJSX.IntrinsicElements["esri-map-view"] & JSXBase.HTMLAttributes<HTMLEsriMapViewElement>;
+            "esri-scene-view": LocalJSX.IntrinsicElements["esri-scene-view"] & JSXBase.HTMLAttributes<HTMLEsriSceneViewElement>;
         }
     }
 }
